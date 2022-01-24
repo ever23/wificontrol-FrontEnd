@@ -1,0 +1,141 @@
+<template>
+<!-- /.login-logo -->
+<div class="card card-outline card-primary">
+    <div class="card-header text-center">
+        <h1><b> {{ equipo.nombre }}</b></h1>
+    </div>
+    <div class="card-body">
+        <formulario>
+            <div class="input-group mb-3 justify-content-center">
+                <div class="form-group ">
+                    <h3>{{ tiempoEquipo }}</h3>
+                </div>
+            </div>
+            <i class="fa fa-check-circle" v-if="!equipo.activo"></i>
+            <div class="progress progress-sm active" v-else>
+                <div class="progress-bar bg-success progress-bar-striped" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" :style="'width: '+progress+'%'">
+                </div>
+            </div>
+            <div class="input-group mb-3 row">
+
+                <div class="form-group  col-md-4">
+                    {{ equipo.tPago }}
+
+                </div>
+
+                <div class="  col-md-4"> {{ equipo.referencia }}</div>
+
+                <h5 class=" col-md-4">{{ equipo.costo }} Bs</h5>
+
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <!--<button type="submit" class="btn btn-primary btn-block" @click="puntoYa">
+                        <img src="/static/img/puntoYa.png" class="img-fluid" alt="Responsive image">
+                    </button>-->
+                </div>
+                <!-- /.col -->
+                <div class="col-6">
+                    <button type="submit" class="btn btn-primary btn-block" @click="pagomovil">
+                   <b> Pagomovil</b>
+                    </button>
+                </div>
+                <!-- /.col -->
+            </div>
+
+        </formulario>
+
+    </div>
+    <!-- /.card-body -->
+</div>
+<!-- /.card -->
+</template>
+
+<script>
+import axios from 'axios'
+import itemEquipo from './item-equipo.vue'
+import {
+    DateTime
+} from 'luxon'
+
+export default {
+    name: 'item-equipo-login',
+    mixins: [itemEquipo],
+    data() {
+        return {
+            relog: '',
+            intervalRelog: null
+        }
+    },
+    created() {
+
+        this.equipo = this.item;
+        if (this.equipo.cierre !== "Indefinido") {
+
+            this.progress = this.calcularProgreso(this.equipo.tiempo, this.equipo.cierre)
+
+            if (this.equipo.activo) {
+                this.progreso(this.equipo.tiempo, this.equipo.cierre)
+            }
+            this.intervalRelog = setInterval(() => {
+
+                let time = DateTime.fromFormat(this.equipo.cierre, 'HH:mm')
+                let time2 = DateTime.now()
+                this.relog = time2.diff(time).toFormat("hh:mm:ss").replaceAll('-', '')
+
+            }, 1000)
+        } else {
+
+            this.intervalIndefinido = setInterval(() => {
+                this.tiempoIndefinido = this.tiempoActivo()
+                this.equipo.costo = (this.horaFloat(this.tiempoIndefinido) * this.costoHora).toLocaleString('en')
+            }, 1000)
+        }
+
+    },
+    destroyed() {
+        clearInterval(this.intervalIndefinido)
+        clearInterval(this.intervalRelog)
+    },
+    computed: {
+        tiempoEquipo() {
+            if (this.equipo.tiempo == 'Indefinido') {
+                return this.tiempoIndefinido
+            } else {
+
+                return this.relog
+
+            }
+        }
+    },
+    methods: {
+        pagomovil() {
+            let monto = new Intl.NumberFormat('es-ES', {
+                minimumFractionDigits: 2
+            }).format(this.equipo.costo);
+            // monto = this.equipo.costo
+            let texto = 'PAGAR 0102 04266023263 23781625 ' + monto
+            navigator.clipboard.writeText(texto)
+            Swal.fire(
+                'Copiado!',
+                texto,
+                'success'
+            )
+
+        }
+
+    }
+}
+</script>
+
+<style>
+#py-modal {
+    position: sticky !important;
+}
+
+.swal2-html-container {
+
+    color: #000 !important;
+
+}
+</style>
