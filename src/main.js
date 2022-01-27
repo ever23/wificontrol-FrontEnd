@@ -15,12 +15,15 @@ import axios from 'axios';
 
 axios.defaults.baseURL =process.env.AXIOS_BASE_URL
 axios.defaults.withCredentials = true
+
 /*
 axios.defaults.baseURL ="http://192.168.1.102:3000"
 axios.defaults.withCredentials = false*/
 //axios.defaults.baseURL =store.getters.ApiServer;
 
 import auth from './auth.js'
+
+import './registerServiceWorker'
 router.beforeEach(auth);
 
 Vue.config.productionTip = process.env.NODE_ENV=="development"?false:true

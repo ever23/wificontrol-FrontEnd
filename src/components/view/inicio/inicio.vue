@@ -203,7 +203,7 @@ export default {
             estadisticas: {}
         }
     },
-    created() {
+    mounted() {
         this.actualizar()
         //this.$store.commit('loading', true);
         this.cargarLista()

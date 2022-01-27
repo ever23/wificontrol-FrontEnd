@@ -21,19 +21,19 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body table-responsive p-0">
-                            <table class="table table-bordered table-hover">
+                            <table class="table table-bordered ">
                                 <thead>
                                     <tr>
-                                        <th>Id</th>
-                                        <th>Nombre</th>
-                                        <th>Activos</th>
-                                        <th>conecciones</th>
-                                        <th>deuda</th>
-                                        <th></th>
+                                        <th class="sorting ">Id</th>
+                                        <th  class="sorting ">Nombre</th>
+                                        <th  class="sorting ">Activos</th>
+                                        <th class="sorting ">conecciones</th>
+                                        <th  class="sorting ">deuda</th>
+                                        <th class="sorting "></th>
                                     </tr>
                                 </thead>
 
-                                <item-cliente  v-for="(cliente, index) in clientes" :item="cliente" :key="cliente.id_cliente" v-show="(pag - 1) * NUM_RESULTS <= index  && pag * NUM_RESULTS > index"></item-cliente>
+                                <item-cliente v-for="(cliente, index) in clientes" :item="cliente" :key="cliente.id_cliente" v-show="(pag - 1) * NUM_RESULTS <= index  && pag * NUM_RESULTS > index"></item-cliente>
 
                             </table>
                         </div>
@@ -83,7 +83,9 @@ export default {
     },
     created() {
         axios.get('/api/clientes').then(d => {
-            this.clientes = d.data;
+            this.clientes = d.data.sort(function (a, b) {
+                return b.deuda - a.deuda;
+            });
 
         }).catch(AxiosCatch)
     },
@@ -96,7 +98,7 @@ export default {
         }
     },
     methods: {
-        
+
         pagePrevius() {
             if (this.pag > 1)
                 this.pag -= 1

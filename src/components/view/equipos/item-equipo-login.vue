@@ -37,16 +37,46 @@
                 <!-- /.col -->
                 <div class="col-6">
                     <button type="submit" class="btn btn-primary btn-block" @click="pagomovil">
-                   <b> Pagomovil</b>
+                        <b> Pagomovil</b>
                     </button>
                 </div>
                 <!-- /.col -->
             </div>
-
         </formulario>
+    </div>
+
+    <!-- /.card-body -->
+    <div class="card-footer clearfix">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title ">Pagos Pendientes</h3>
+                <h4><span class="badge badge-danger  float-right">Total: {{ deuda }} bs</span></h4>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body p-0">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>tiempo</th>
+                            <th>Costo</th>
+                            <th>Hora</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in equipos" :key="item.id_equipo">
+                            <th> {{ item.tiempo }} </th>
+                            <th>{{ item.costo }}</th>
+                            <th>{{ item.apertura }}</th>
+                            <th>{{ item.fecha }}</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
 
     </div>
-    <!-- /.card-body -->
 </div>
 <!-- /.card -->
 </template>
@@ -64,12 +94,22 @@ export default {
     data() {
         return {
             relog: '',
-            intervalRelog: null
+            intervalRelog: null,
+            equipos: [],
+            deuda: 0
         }
     },
-    created() {
+    mounted() {
+        axios.get('/api/equipos/pendientes?id_cliente=' + this.equipo.id_cliente)
+            .then(result => {
 
+                this.equipos = result.data;
+            }).catch(AxiosCatch)
+    },
+    created() {
+       
         this.equipo = this.item;
+
         if (this.equipo.cierre !== "Indefinido") {
 
             this.progress = this.calcularProgreso(this.equipo.tiempo, this.equipo.cierre)
@@ -97,6 +137,21 @@ export default {
         clearInterval(this.intervalIndefinido)
         clearInterval(this.intervalRelog)
     },
+    watch: {
+        // cada vez que equipo cambie, esta función será ejecutada
+        equipo: function (newEquipo, oldEquipo) {
+            if (!newEquipo.activo) {
+                this.$emit("update");
+            }
+        },
+        equipos: function (newEquipos, oldEquipos) {
+            let deuda = 0
+            for(let equipo of newEquipos){
+                deuda += equipo.costo
+            }
+            this.deuda = deuda + this.equipo.costo
+        }
+    },
     computed: {
         tiempoEquipo() {
             if (this.equipo.tiempo == 'Indefinido') {
@@ -112,15 +167,20 @@ export default {
         pagomovil() {
             let monto = new Intl.NumberFormat('es-ES', {
                 minimumFractionDigits: 2
-            }).format(this.equipo.costo);
+            }).format(this.deuda);
             // monto = this.equipo.costo
             let texto = 'PAGAR 0102 04266023263 23781625 ' + monto
-            navigator.clipboard.writeText(texto)
+
             Swal.fire(
                 'Copiado!',
                 texto,
                 'success'
             )
+            try {
+                navigator.clipboard.writeText(texto)
+            } catch (e) {
+
+            }
 
         }
 

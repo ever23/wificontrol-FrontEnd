@@ -8,6 +8,11 @@ const BuildIndex = path.resolve(BuildPath, 'index.html')
 const assetsPublicPath = '/';
 
 module.exports = {
+  pwa: {
+    workboxOptions: {
+      skipWaiting: true
+    }
+  },
   dev: {
 
     // Paths
@@ -18,7 +23,7 @@ module.exports = {
       '/api': {
         target: 'http://127.0.0.1:8082/',
         changeOrigin: true,
-      //  pathRewrite: { '^/api': '/api' }
+        //  pathRewrite: { '^/api': '/api' }
       },
       '/static': {
         target: 'http://127.0.0.1:8081/static',
