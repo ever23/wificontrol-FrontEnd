@@ -10,6 +10,11 @@
             <div class="input-group mb-3">
                 <autocomplete :initValue="newEquipo.nombre" :url="api" :onShouldGetData="bucarCliente" anchor="nombre" label="writer" :classes="{ wrapper: 'form-wrapper ', input: 'form-control', list: 'data-list', item: 'data-list-item' }" :on-select="getData" :onInput="d=>newEquipo.nombre=d">
                 </autocomplete>
+                <select class="form-control" @change="selectIp">
+                    <option> </option>
+                    <option v-for="(item,id) in wifi" :value="id"> IP {{ item.ip }} {{ item.nombre }}</option>
+
+                </select>
 
             </div>
             <div class="input-group mb-3">
@@ -97,10 +102,13 @@ export default {
                 referencia: "",
                 apertura: "",
                 cierre: "Indefinido",
-                rangoTiempo: 0
+                rangoTiempo: 0,
+                ip: "",
+                mac: ""
             },
             time: 0,
-            equipo: {}
+            equipo: {},
+            wifi: []
         }
     },
 
@@ -117,7 +125,14 @@ export default {
             this.newEquipo.nombre = this.$store.getters.cliente.nombre
             this.newEquipo.id_cliente = this.$store.getters.cliente.id_cliente
         }
-
+        this.$store.commit('loading', true);
+        axios.get('/api/mercusys/').then(data => {
+            this.wifi = data.data
+            this.$store.commit('loading', false);
+        }).catch(e => {
+            AxiosCatch(e)
+            this.$store.commit('loading', false);
+        })
         //this.$('.select2').select2()
     },
     computed: {
@@ -134,6 +149,11 @@ export default {
         }
     },
     methods: {
+        selectIp(e) {
+            let id = e.target.value
+            this.newEquipo.ip = this.wifi[id].ip
+            this.newEquipo.mac = this.wifi[id].mac
+        },
         actualizar(data) {
             this.equipo = data
             this.$emit('registro', data)
@@ -148,6 +168,7 @@ export default {
             })
         },
         getData(obj) {
+            console.log(obj)
             this.newEquipo.id_cliente = obj.id_cliente
             this.newEquipo.nombre = obj.nombre
         },

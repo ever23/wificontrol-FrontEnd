@@ -3,6 +3,11 @@
     <td>
         <autocomplete :url="api" :onShouldGetData="bucarCliente" anchor="nombre" label="writer" :classes="{ wrapper: 'form-wrapper', input: 'form-control', list: 'data-list', item: 'data-list-item' }" :on-select="getData" :onInput="d=>newEquipo.nombre=d">
         </autocomplete>
+        <select class="form-control" @change="selectIp">
+            <option> </option>
+            <option v-for="(item,id) in wifi" :value="id"> IP {{ item.ip }} {{ item.nombre }}</option>
+
+        </select>
     </td>
     <td>
         <div>
@@ -43,15 +48,29 @@ import registro from './registro.vue'
 export default {
 
     name: 'registro-equipo-tr',
-    mixins: [registro]/*,
+    mixins: [registro],
     created() {
 
         this.api = axios.defaults.baseURL + '/api/clientes/busqueda'
-         this.tiempo(this.newEquipo)
-            setInterval(() => this.tiempo(this.newEquipo), 10000)
+
+        this.$store.commit('loading', true);
+        axios.get('/api/mercusys/').then(data => {
+            this.wifi = data.data
+            this.$store.commit('loading', false);
+            this.newEquipo.id_cliente = null
+        }).catch(e => {
+            AxiosCatch(e)
+            this.$store.commit('loading', false);
+        })
 
         //this.$('.select2').select2()
-    }*/
+    },
+     watch: {
+        // cada vez que equipo cambie, esta función será ejecutada
+        newEquipo: function (newEquipo, oldEquipo) {
+           
+        }
+    },
 
 }
 </script>

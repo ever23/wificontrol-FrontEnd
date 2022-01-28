@@ -43,7 +43,9 @@ export default
             referencia: localEquipo.referencia,
             apertura: localEquipo.apertura,
             cierre: localEquipo.cierre,
-            activo: localEquipo.activo
+            activo: localEquipo.activo,
+            ip: localEquipo.ip,
+            mac: localEquipo.mac
         },
         getters:
         {
@@ -58,7 +60,9 @@ export default
                     referencia: state.referencia,
                     apertura: state.apertura,
                     cierre: state.cierre,
-                    activo: state.activo
+                    activo: state.activo,
+                    ip: state.ip,
+                    mac: state.mac
                 }
             },
             cliente(state) {
@@ -69,6 +73,9 @@ export default
             },
             isActivo(state) {
                 return state.activo
+            },
+            MAC(state){
+                return state.mac
             }
 
         },
@@ -87,6 +94,8 @@ export default
                     state.apertura = equipo.apertura
                     state.cierre = equipo.cierre
                     state.activo = equipo.activo
+                    state.ip = equipo.ip
+                    state.mac = equipo.mac
                 } else {
                     state.id_equipo = null
                     state.id_cliente = equipo.id_cliente
@@ -98,6 +107,7 @@ export default
                     state.apertura = null
                     state.cierre = null
                     state.activo = null
+                    state.ip = null
                 }
                 setLocalStorageEquipo(state)
 

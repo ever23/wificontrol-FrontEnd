@@ -104,7 +104,8 @@ export default {
             } else {
                 return this.equipo.tiempo
             }
-        }, estaAsignado(){
+        },
+        estaAsignado() {
 
             return !(this.equipo.id_equipo == this.$store.getters.equipo.id_equipo)
         }
@@ -172,6 +173,12 @@ export default {
                         this.$forceUpdate()
                         this.$emit("update", this.equipo);
                         Swal.fire('Actualizado!', '', 'success')
+                        console.log(this.equipo)
+                        axios.post('/api/mercusys/bloquear', {
+                            ip: this.equipo.ip
+                        }).then(d => {
+
+                        }).catch(AxiosCatch)
                     }).catch(AxiosCatch)
 
                 } else {
@@ -255,6 +262,13 @@ export default {
                         this.$emit("update", this.equipo);
                         Swal.fire('Actualizado!', '', 'success')
                         this.$store.commit('loading', false);
+                        if (this.activo) {
+                            axios.post('/api/mercusys/desbloquear', {
+                                mac: this.equipo.mac
+                            }).then(d => {
+
+                            }).catch(AxiosCatch)
+                        }
                     }).catch(e => {
                         AxiosCatch(e)
                         this.$store.commit('loading', false);
