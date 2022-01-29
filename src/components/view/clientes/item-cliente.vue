@@ -23,7 +23,7 @@
                                 <div class="info-box-content">
                                     <span class="info-box-text">Deudas</span>
                                     <span class="info-box-number">
-                                        {{ deudas }} Bs
+                                        {{ cliente.deuda }} Bs
                                     </span>
                                 </div>
                                 <!-- /.info-box-content -->
@@ -101,7 +101,7 @@ export default {
             equipos: {},
             expandido: false,
             costoHora: 3,
-            deudas: 0,
+            deudas: null,
             eliminado:false
         }
     },
@@ -141,7 +141,7 @@ export default {
         },
         expandir() {
             this.expandido = !this.expandido
-            this.deudas = 0
+            this.cliente.deuda = 0
             if (this.expandido) {
 
                 axios.get('/api/equipos/cliente?id_cliente=' + this.cliente.id_cliente).then(data => {
@@ -149,7 +149,7 @@ export default {
                     for (let equipo of data.data) {
                         // console.log(this.equipos)
                         if (equipo.tPago == '') {
-                            this.deudas += equipo.costo
+                            this.cliente.deuda += equipo.costo
                         }
                     }
                 }).catch(AxiosCatch)

@@ -96,7 +96,8 @@ export default {
             relog: '',
             intervalRelog: null,
             equipos: [],
-            deuda: 0
+            deuda: 0,
+            equipos: []
         }
     },
     mounted() {
@@ -107,7 +108,8 @@ export default {
             }).catch(AxiosCatch)
     },
     created() {
-       
+        
+
         this.equipo = this.item;
 
         if (this.equipo.cierre !== "Indefinido") {
@@ -146,7 +148,7 @@ export default {
         },
         equipos: function (newEquipos, oldEquipos) {
             let deuda = 0
-            for(let equipo of newEquipos){
+            for (let equipo of newEquipos) {
                 deuda += equipo.costo
             }
             this.deuda = deuda + this.equipo.costo

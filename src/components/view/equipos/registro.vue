@@ -12,7 +12,7 @@
                 </autocomplete>
                 <select class="form-control" @change="selectIp">
                     <option> </option>
-                    <option v-for="(item,id) in wifi" :value="id"> IP {{ item.ip }} {{ item.nombre }}</option>
+                    <option v-for="(item,id) in equiposPendientes" :value="id"> IP {{ item.ip }} {{ item.nombre }}</option>
 
                 </select>
 
@@ -108,7 +108,8 @@ export default {
             },
             time: 0,
             equipo: {},
-            wifi: []
+            wifi: [],
+            equiposPendientes:[]
         }
     },
 
@@ -121,18 +122,38 @@ export default {
     created() {
 
         this.api = axios.defaults.baseURL + '/api/clientes/busqueda'
-        if (this.$store.getters.cliente.id_cliente) {
+        if ( this.newEquipo.MAC!="" &&  this.newEquipo.MAC!=undefined) {
             this.newEquipo.nombre = this.$store.getters.cliente.nombre
             this.newEquipo.id_cliente = this.$store.getters.cliente.id_cliente
+            this.sockets.subscribe('equipos', (data) => {
+                let dispositivo = data.find(wifi => this.$store.getters.MAC == wifi.mac);
+                 this.newEquipo.ip = dispositivo.ip
+            });
+        } else {
+            axios.get('/api/equipos/activos').then(data => {
+                this.equipos = data.data;
+
+            }).catch(e => {
+                AxiosCatch(e)
+
+            })
+            this.sockets.subscribe('equipos', (data) => {
+                this.wifi = data
+                this.equiposPendientes = []
+
+                for (let wifi of this.wifi) {
+
+                    let activo = this.equipos.find(equipo => equipo.mac == wifi.mac);
+
+                    if (activo == undefined) {
+
+                        this.equiposPendientes.push(wifi)
+                    }
+                }
+            });
+
         }
-        this.$store.commit('loading', true);
-        axios.get('/api/mercusys/').then(data => {
-            this.wifi = data.data
-            this.$store.commit('loading', false);
-        }).catch(e => {
-            AxiosCatch(e)
-            this.$store.commit('loading', false);
-        })
+
         //this.$('.select2').select2()
     },
     computed: {

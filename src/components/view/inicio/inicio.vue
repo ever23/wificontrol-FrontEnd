@@ -111,7 +111,9 @@
                     </thead>
 
                     <tbody>
-                        <registro-equipo-tr @registro="registroEquipo" v-if="formActive"></registro-equipo-tr>
+                        
+                        <registro-pendiente-tr v-if="formActive" @registro="registroEquipoPendiente" v-for="item in equiposPendientes" :item="item" :key="item.mac"></registro-pendiente-tr>
+
                         <item-equipo @update="actualizar" :costoHora="costoHora" v-for="equipo in getEquipos" :item="equipo" :key="equipo.id_equipo"></item-equipo>
 
                     </tbody>
@@ -172,6 +174,12 @@
         </div>
         <!-- ./col -->
     </div>
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-sm-12">
+            <wifi-equipos :wifi="wifi"></wifi-equipos>
+        </div>
+    </div>
+
 </main>
 </template>
 
@@ -187,26 +195,48 @@ import {
 import Autocomplete from 'vue2-autocomplete-js';
 import itemEquipo from '../equipos/item-equipo.vue'
 import registro from '../equipos/registro-tr.vue'
+import registroPendiente from '../equipos/registro-pendiente-tr.vue'
+import wifiEquipos from '../wifi/equipos.vue'
 export default {
     filters: filter,
     components: {
         itemEquipo,
-        'registro-equipo-tr': registro
+        'registro-equipo-tr': registro,
+        'registro-pendiente-tr': registroPendiente,
+        wifiEquipos
     },
     name: 'inicio',
     data() {
         return {
-            costoHora:3,
+            costoHora: 3,
             equipos: Array,
             time: 0,
             formActive: false,
-            estadisticas: {}
+            estadisticas: {},
+            wifi: [],
+            equiposPendientes: []
         }
+    },
+    created() {
+        this.sockets.subscribe('equipos', (data) => {
+           this.wifi = data
+           this.equiposPendientes=[]
+            let equiposActivos = this.equipos.filter(equipo => equipo.activo)
+            for (let wifi of this.wifi) {
+
+                let activo = equiposActivos.find(equipo => equipo.mac == wifi.mac);
+
+                if (activo == undefined) {
+
+                    this.equiposPendientes.push(wifi)
+                }
+            }
+        });
     },
     mounted() {
         this.actualizar()
         //this.$store.commit('loading', true);
-        this.cargarLista()
+     
         //this.$('.select2').select2()
     },
     computed: {
@@ -224,7 +254,15 @@ export default {
             this.equipos.unshift(equipo)
             this.actualizar()
         },
+        registroEquipoPendiente(equipo) {
+
+            this.equipos.unshift(equipo)
+            this.equiposPendientes = this.equiposPendientes.filter(item => item.mac != equipo.mac)
+             this.$socket.emit('desbloquear', equipo.mac)
+            this.actualizar()
+        },
         actualizar() {
+               this.cargarLista()
 
             axios.get('/api/equipos/estadisticas').then(d => {
 
@@ -243,9 +281,16 @@ export default {
             }
         },
         cargarLista() {
-            axios.get('/api/equipos/hoy').then(data => {
-                this.equipos = data.data;
-            }).catch(AxiosCatch)
+            return new Promise((res, rej) => {
+                axios.get('/api/equipos/hoy').then(data => {
+                    this.equipos = data.data;
+                    res(this.equipos)
+                }).catch(e => {
+                    AxiosCatch(e)
+                    rej(e)
+                })
+            })
+
         }
 
     }

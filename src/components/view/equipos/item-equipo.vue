@@ -173,12 +173,7 @@ export default {
                         this.$forceUpdate()
                         this.$emit("update", this.equipo);
                         Swal.fire('Actualizado!', '', 'success')
-                        console.log(this.equipo)
-                        axios.post('/api/mercusys/bloquear', {
-                            ip: this.equipo.ip
-                        }).then(d => {
-
-                        }).catch(AxiosCatch)
+                        this.$socket.emit('bloquear', this.equipo.ip)
                     }).catch(AxiosCatch)
 
                 } else {
@@ -253,7 +248,7 @@ export default {
                     }
                     axios.put('/api/equipos', update).then(d => {
 
-                        if (this.progreso == 0) {
+                        if (this.progress == 0) {
                             this.activo = false
                         }
                         this.formTiempo = this.formPago = false
@@ -263,11 +258,7 @@ export default {
                         Swal.fire('Actualizado!', '', 'success')
                         this.$store.commit('loading', false);
                         if (this.activo) {
-                            axios.post('/api/mercusys/desbloquear', {
-                                mac: this.equipo.mac
-                            }).then(d => {
-
-                            }).catch(AxiosCatch)
+                           this.$socket.emit('desbloquear', this.equipo.mac)
                         }
                     }).catch(e => {
                         AxiosCatch(e)

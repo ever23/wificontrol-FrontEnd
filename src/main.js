@@ -6,7 +6,8 @@ import App from './App'
 import router from './router'
 import store from './store'
 import Reusables from './components/reusables/index.js'
-
+import SocketIO from 'socket.io-client';
+import VueSocketio from 'vue-socket.io';
 //import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 
@@ -29,8 +30,32 @@ router.beforeEach(auth);
 Vue.config.productionTip = process.env.NODE_ENV=="development"?false:true
 //Vue.use(BootstrapVue);
 
+
+
+Vue.use(new VueSocketio({
+    debug: true,
+    connection: SocketIO(process.env.AXIOS_BASE_URL,  {
+        withCredentials: true
+      
+      }), //options object is Optional
+    vuex: {
+      store,
+      actionPrefix: "SOCKET_",
+      mutationPrefix: "SOCKET_"
+    }
+  })
+);
+ 
 /* eslint-disable no-new */
 const app =new Vue({
+    sockets: {
+        connect: function () {
+            console.log('socket connected')
+        },
+        customEmit: function (data) {
+            console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)')
+        }
+    },
     el:'#app',
     store,
     router,

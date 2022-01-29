@@ -53,15 +53,7 @@ export default {
 
         this.api = axios.defaults.baseURL + '/api/clientes/busqueda'
 
-        this.$store.commit('loading', true);
-        axios.get('/api/mercusys/').then(data => {
-            this.wifi = data.data
-            this.$store.commit('loading', false);
-            this.newEquipo.id_cliente = null
-        }).catch(e => {
-            AxiosCatch(e)
-            this.$store.commit('loading', false);
-        })
+        
 
         //this.$('.select2').select2()
     },
