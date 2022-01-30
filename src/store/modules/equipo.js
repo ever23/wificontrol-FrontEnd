@@ -141,11 +141,11 @@ export default
                 axios.get('/api/equipos/equipo?id_equipo=' + id_equipo).then(d => {
                     
                     context.commit("fijarEquipo", d.data);
-
+                    
                 }).catch(AxiosCatch)
             },
             equipoCliente(context) {
-                axios.get('/api/equipos/cliente-activo?id_cliente=' + context.state.id_cliente).then(d => {
+                axios.get('/api/equipos/mac-activa?mac=' + context.state.mac).then(d => {
 
                     if (!d.data.error) {
 

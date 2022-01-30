@@ -28,19 +28,15 @@
                 <h5 class=" col-md-4">{{ equipo.costo }} Bs</h5>
 
             </div>
-            <div class="row">
-                <div class="col-6">
-                    <!--<button type="submit" class="btn btn-primary btn-block" @click="puntoYa">
-                        <img src="/static/img/puntoYa.png" class="img-fluid" alt="Responsive image">
-                    </button>-->
-                </div>
-                <!-- /.col -->
-                <div class="col-6">
-                    <button type="submit" class="btn btn-primary btn-block" @click="pagomovil">
-                        <b> Pagomovil</b>
-                    </button>
-                </div>
-                <!-- /.col -->
+            <div class="btn-group">
+
+                <button type="submit" class="btn btn-danger btn-md" v-if="equipo.cierre=='Indefinido'" @click="cerrar">
+                    <b> Cerrar </b>
+                </button>
+                <button type="submit" class="btn btn-primary btn-md" @click="pagomovil">
+                    <b> Pagomovil</b>
+                </button>
+
             </div>
         </formulario>
     </div>
@@ -53,8 +49,8 @@
                 <h4><span class="badge badge-danger  float-right">Total: {{ deuda }} bs</span></h4>
             </div>
             <!-- /.card-header -->
-            <div class="card-body p-0">
-                <table class="table table-sm">
+            <div class="card-body table-responsive p-0" style="height: 150px;">
+                <table class="table table-sm table-head-fixed text-nowrap">
                     <thead>
                         <tr>
                             <th>tiempo</th>
@@ -108,7 +104,6 @@ export default {
             }).catch(AxiosCatch)
     },
     created() {
-        
 
         this.equipo = this.item;
 

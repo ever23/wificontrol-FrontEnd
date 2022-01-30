@@ -6,8 +6,8 @@
         <div v-if="formLogin">Registrar</div>
     </button>
     <login-form v-if="formLogin"></login-form>
-    <registro-equipo  @registro="registroEquipo"  v-if="!formLogin && !isEquipo"></registro-equipo>
-    <item-equipo-login  :item="equipo" :costoHora="3"  v-if="isEquipo && !formLogin"></item-equipo-login>
+    <registro-equipo-login @registro="registroEquipo" v-if="!formLogin && !isEquipo"></registro-equipo-login>
+    <item-equipo-login :item="equipo" :costoHora="3" v-if="isEquipo && !formLogin"></item-equipo-login>
 </div>
 <!-- /.card -->
 </template>
@@ -15,13 +15,13 @@
 <script>
 import axios from 'axios'
 import loginForm from './login-form.vue'
-import registroEquipo from '../equipos/registro.vue'
+import registroEquipo from '../equipos/registro-login.vue'
 import itemEquipoLogin from '../equipos/item-equipo-login.vue'
 export default {
     name: 'login',
     components: {
         loginForm,
-        registroEquipo,
+        'registro-equipo-login':registroEquipo,
         itemEquipoLogin
     },
     props: ['redirect'],
@@ -30,20 +30,22 @@ export default {
             formLogin: false
         }
     },
+    mounted() {
+        this.$store.dispatch('verificarEquipo')
+    },
     created() {
 
-        this.$store.dispatch('verificarEquipo')
-       
-    },computed:{
-        isEquipo(){
-           return  this.$store.getters.isActivo 
+    },
+    computed: {
+        isEquipo() {
+            return this.$store.getters.isActivo
         },
-        equipo(){
-            return  this.$store.getters.equipo 
+        equipo() {
+            return this.$store.getters.equipo
         }
     },
     methods: {
-        registroEquipo(equipo){
+        registroEquipo(equipo) {
             this.$store.dispatch('fijarEquipo', equipo)
         }
     }

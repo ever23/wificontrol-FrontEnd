@@ -111,7 +111,7 @@
                     </thead>
 
                     <tbody>
-                        
+
                         <registro-pendiente-tr v-if="formActive" @registro="registroEquipoPendiente" v-for="item in equiposPendientes" :item="item" :key="item.mac"></registro-pendiente-tr>
 
                         <item-equipo @update="actualizar" :costoHora="costoHora" v-for="equipo in getEquipos" :item="equipo" :key="equipo.id_equipo"></item-equipo>
@@ -175,7 +175,7 @@
         <!-- ./col -->
     </div>
     <div class="row justify-content-center">
-        <div class="col-lg-6 col-sm-12">
+        <div class="col-lg-8 col-sm-12">
             <wifi-equipos :wifi="wifi"></wifi-equipos>
         </div>
     </div>
@@ -219,24 +219,17 @@ export default {
     },
     created() {
         this.sockets.subscribe('equipos', (data) => {
-           this.wifi = data
-           this.equiposPendientes=[]
-            let equiposActivos = this.equipos.filter(equipo => equipo.activo)
-            for (let wifi of this.wifi) {
+            this.wifi = data
 
-                let activo = equiposActivos.find(equipo => equipo.mac == wifi.mac);
-
-                if (activo == undefined) {
-
-                    this.equiposPendientes.push(wifi)
-                }
-            }
         });
+        setInterval(e => {
+
+        }, 5000)
     },
     mounted() {
         this.actualizar()
         //this.$store.commit('loading', true);
-     
+
         //this.$('.select2').select2()
     },
     computed: {
@@ -258,17 +251,13 @@ export default {
 
             this.equipos.unshift(equipo)
             this.equiposPendientes = this.equiposPendientes.filter(item => item.mac != equipo.mac)
-             this.$socket.emit('desbloquear', equipo.mac)
+            this.$socket.emit('desbloquear', equipo.mac)
             this.actualizar()
+            this.formActive = false
         },
         actualizar() {
-               this.cargarLista()
+            this.cargarLista()
 
-            axios.get('/api/equipos/estadisticas').then(d => {
-
-                this.estadisticas = d.data
-
-            }).catch(AxiosCatch)
         },
         activarFormulario() {
 
@@ -279,17 +268,33 @@ export default {
             } else {
                 this.formActive = !this.formActive;
             }
+            this.equiposPendientes = []
+            let equiposActivos = this.equipos.filter(equipo => equipo.activo)
+            for (let wifi of this.wifi) {
+
+                let activo = equiposActivos.find(equipo => equipo.mac == wifi.mac);
+
+                if (activo == undefined) {
+
+                    this.equiposPendientes.push(wifi)
+                }
+            }
+
         },
         cargarLista() {
-            return new Promise((res, rej) => {
-                axios.get('/api/equipos/hoy').then(data => {
-                    this.equipos = data.data;
-                    res(this.equipos)
-                }).catch(e => {
-                    AxiosCatch(e)
-                    rej(e)
-                })
+
+            axios.get('/api/equipos/hoy').then(data => {
+                this.equipos = data.data;
+
+            }).catch(e => {
+                AxiosCatch(e)
+
             })
+            axios.get('/api/equipos/estadisticas').then(d => {
+
+                this.estadisticas = d.data
+
+            }).catch(AxiosCatch)
 
         }
 

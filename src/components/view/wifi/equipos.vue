@@ -11,11 +11,13 @@
                     <th>Nombre</th>
                     <th>IP</th>
                     <th>MAC</th>
+                    <th>Subida</th>
+                    <th>Bajada</th>
                     <th style="width: 40px"></th>
                 </tr>
             </thead>
             <tbody>
-                <wifi-item v-for="(item,key) in wifi" :item="item" :key="key"></wifi-item>
+                <wifi-item v-for="item in wifi" :item="item" :key="item.ip"></wifi-item>
             </tbody>
         </table>
     </div>
@@ -37,31 +39,7 @@ export default {
             required: true
         }
     },
-    name: 'wifi-equipos',
-    data() {
-        return {
-
-        }
-    },
-    created() {
-
-    },
-    mounted() {
-
-    },
-    computed: {
-
-    },
-    methods: {
-        bloquear(e){
-            let id = e.target.id
-            console.log(id)
-
-        },
-        desbloquear(){
-
-        }
-
-    }
+    name: 'wifi-equipos'
+  
 }
 </script>

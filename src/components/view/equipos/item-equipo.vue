@@ -160,7 +160,7 @@ export default {
 
                     }
 
-                    axios.put('/api/equipos', update).then(d => {
+                    axios.put('/api/equipos/cerrar', {id_equipo: this.equipo.id_equipo}).then(d => {
                         clearInterval(this.intervalIndefinido)
                         this.equipo.tiempo = update.tiempo
                         this.equipo.cierre = update.cierre
@@ -173,7 +173,7 @@ export default {
                         this.$forceUpdate()
                         this.$emit("update", this.equipo);
                         Swal.fire('Actualizado!', '', 'success')
-                        this.$socket.emit('bloquear', this.equipo.ip)
+                        this.$socket.emit('bloquear', this.equipo.mac)
                     }).catch(AxiosCatch)
 
                 } else {

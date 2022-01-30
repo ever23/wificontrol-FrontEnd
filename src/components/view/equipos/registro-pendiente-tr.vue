@@ -4,8 +4,8 @@
         <div>
             <span :alt="wifi.mac"> IP {{ wifi.ip }} {{ wifi.nombre }} </span>
         </div>
-         <button  v-if="!formActivecliente" class="btn  btn-primary" @click="formActivecliente=true">   {{newEquipo.nombre}}</button>
-        
+        <button v-if="!formActivecliente" class="btn  btn-primary" @click="formActivecliente=true"> {{newEquipo.nombre}}</button>
+
         <autocomplete v-if="formActivecliente" :initValue="newEquipo.nombre" :url="api" :onShouldGetData="bucarCliente" anchor="nombre" label="writer" :classes="{ wrapper: 'form-wrapper', input: 'form-control', list: 'data-list', item: 'data-list-item' }" :on-select="getData" :onInput="d=>newEquipo.nombre=d">
         </autocomplete>
 
@@ -15,8 +15,8 @@
             <div v-if="!newEquipo.libre" class="float-left"> {{ computedTiempo }}</div>
             <div class="form-group float-right">
                 <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                    <input type="checkbox" class="custom-control-input" id="customSwitch3" v-model=" newEquipo.libre">
-                    <label class="custom-control-label" for="customSwitch3"></label>
+                    <input type="checkbox" class="custom-control-input" v-model=" newEquipo.libre" :id="'customSwitch'+wifi.mac">
+                    <label class="custom-control-label" :for="'customSwitch'+wifi.mac"></label>
                 </div>
 
             </div>
@@ -49,7 +49,7 @@
 
 <script>
 import axios from 'axios'
-import registro from './registro.vue'
+import registro from './registro-tr.vue'
 import itemWifi from '../wifi/item.vue'
 export default {
 
@@ -61,21 +61,25 @@ export default {
             required: true
         }
     },
-    data(){
+    data() {
         return {
-            formActivecliente:true
+            formActivecliente: true
         }
     },
     created() {
-
+       
         this.api = axios.defaults.baseURL + '/api/clientes/busqueda'
         this.wifi = this.item
         this.newEquipo.ip = this.wifi.ip
         this.newEquipo.mac = this.wifi.mac
         axios.get('/api/equipos/mac?mac=' + this.newEquipo.mac).then(result => {
-            this.newEquipo.nombre = result.data.nombre
-            this.newEquipo.id_cliente = result.data.id_cliente
-            this.formActivecliente=false
+            if (result.data.nombre !== null) {
+
+                this.newEquipo.nombre = result.data.nombre
+                this.newEquipo.id_cliente = result.data.id_cliente
+                this.formActivecliente = false
+            }
+
         }).catch(AxiosCatch)
 
         //this.$('.select2').select2()
@@ -83,9 +87,9 @@ export default {
     watch: {
         // cada vez que equipo cambie, esta función será ejecutada
         item: function (newitem, olditem) {
-           
+
             console.log(newitem)
-             this.wifi = newitem
+            this.wifi = newitem
         }
     },
     methods: {

@@ -44,27 +44,25 @@ export default {
     data() {
         return {
             notificaciones: [],
-            interval:null
+            interval: null
 
         }
     },
-    destroyed(){
-     
+    destroyed() {
+
         clearInterval(this.interval)
 
     },
     created() {
-        
-       subscription()
 
-        //const miWorker = new Worker(worker);
-        /* axios.post("/api/notificaciones/suscribir",{
-             suscripcion:suscripcion
-         }).then(d=>{
+        subscription()
+        this.cargarNotificaciones()
+        this.sockets.subscribe('notificacion', (data) => {
+            notify(data.message, 'info')
+            this.cargarNotificaciones()
+        });
 
-         }).catch(AxiosCatch)*/
-        this.loadnotifications();
-       this.interval = setInterval(() => this.notificaciones = this.tiempo(this.notificaciones), 10000);
+        this.interval = setInterval(() => this.notificaciones = this.tiempo(this.notificaciones), 10000);
     },
     computed: {
         numero_notificaciones() {
@@ -80,7 +78,32 @@ export default {
     },
 
     methods: {
+        cargarNotificaciones() {
+            if (!this.$store.getters.IsUser)
+                return;
 
+            let data = '';
+            if (this.notificaciones.length > 0) {
+                data = '?fech_notificacion=' + this.notificaciones[0].fech_notificacion;
+            }
+
+            axios.get('/api/notificaciones/now' + data, {
+                    cancelToken: source.token
+                })
+                .then(request => {
+                    if (request.data.ok) {
+                        this.updateNotification(request.data);
+                    } else {
+                        AxiosCatch(request.data.error);
+                    }
+
+                }).catch(d => {
+                    AxiosCatch(d);
+                    //  console.log(d,this.$store.IsUser)
+                    //if(this.$store.getters.User.permisos!==null)
+
+                });
+        },
         vaciar() {
             axios.delete('/api/notificaciones').
             then(req => {
@@ -131,9 +154,9 @@ export default {
 
             if (this.notificaciones.length > 0) {
                 data += '&fech_notificacion=' + this.notificaciones[0].fech_notificacion;
-            }else{
+            } else {
                 let time = DateTime.now()
-                  data += '&fech_notificacion=' +time.toFormat('yyyy/MM/dd H:mm:ss')
+                data += '&fech_notificacion=' + time.toFormat('yyyy/MM/dd H:mm:ss')
             }
 
             axios.get('/api/notificaciones' + data).
@@ -143,46 +166,8 @@ export default {
                 not.visto = true;
                 this.$router.replace(path.join(this.$store.getters.ApiServer, not.href_notificacion));
             }).catch(AxiosCatch);
-        },
-        launchNotification(notification) {
+        }
 
-            if (notification.length > 0) {
-
-                for (let i in notification) {
-                   notify(notification[i].desc_notificacion,'error')
-                }
-
-            }
-
-        },
-
-        loadnotifications() {
-            if(!this.$store.getters.IsUser)
-            return ;
-            
-            let data = '';
-            if (this.notificaciones.length > 0) {
-                data = '?fech_notificacion=' + this.notificaciones[0].fech_notificacion;
-            }
-
-            axios.get('/api/notificaciones/now' + data, {
-                    cancelToken: source.token
-                })
-                .then(request => {
-                    if (request.data.ok) {
-                        this.updateNotification(request.data);
-                    } else {
-                        AxiosCatch(request.data.error);
-                    }
-
-                    setTimeout(() => this.loadnotifications(), TIME_NOTIFICACION);
-                }).catch(d => {
-                    AxiosCatch(d);
-                  //  console.log(d,this.$store.IsUser)
-                    //if(this.$store.getters.User.permisos!==null)
-                    setTimeout(() => this.loadnotifications(), TIME_NOTIFICACION);
-                });
-        },
     }
 }
 </script>

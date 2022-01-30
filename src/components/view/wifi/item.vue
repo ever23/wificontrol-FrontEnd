@@ -3,6 +3,8 @@
     <td>{{ item.nombre }}</td>
     <td>{{ item.ip }}</td>
     <td>{{ item.mac }}</td>
+    <td>{{ subida }}</td>
+    <td>{{ bajada }}</td>
     <td>
         <div class="btn-group">
             <button class="btn btn-primary btn-sm" type="button" v-if="item.bloqueado" @click="desbloquear"><i class="fa fa-lock"></i></button>
@@ -36,9 +38,27 @@ export default {
 
     },
     computed: {
+        subida(){
+            
+            return this.calcularDatos(this.item.up)
+        },
+        bajada(){
+            return this.calcularDatos(this.item.down)
+        }
 
     },
     methods: {
+        calcularDatos(datos){
+            let numberFormat = new Intl.NumberFormat('en-EN', {
+                minimumFractionDigits: 1,
+                maximumFractionDigits: 1
+            })
+            if(datos<1000){
+                return datos+" B/s"
+            }else {
+                return  numberFormat.format(datos/1000)+" KB/s"
+            }
+        },
         bloquear(e) {
             Swal.fire({
                 title: 'Seguro que desea bloquear el equipo? ',
@@ -46,7 +66,7 @@ export default {
                 confirmButtonText: 'si'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    this.$socket.emit('bloquear', this.item.ip)
+                    this.$socket.emit('bloquear', this.item.mac)
                 }
             })
         },
