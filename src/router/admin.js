@@ -24,7 +24,7 @@ import $store from '@/store'
 import path from 'path'
 export default
 {
-    path:"/",
+    path: path.join($store.getters.ApiServer,'/'),
     component:admin,
     children:
     [

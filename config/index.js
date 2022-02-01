@@ -3,7 +3,7 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
-const BuildPath = path.resolve(__dirname, '../../produccion/public');
+const BuildPath = path.resolve(__dirname, '../../server/public/admin/');
 const BuildIndex = path.resolve(BuildPath, 'index.html')
 const assetsPublicPath = '/';
 
@@ -25,10 +25,10 @@ module.exports = {
         changeOrigin: true,
         //  pathRewrite: { '^/api': '/api' }
       },
-      '/static': {
+      '/admin/static': {
         target: 'http://127.0.0.1:8081/static',
         changeOrigin: true,
-        pathRewrite: { '^/static': '' }
+        pathRewrite: { '^/admin/static': '' }
       },
       '/icono': {
         target: 'http://127.0.0.1:8081/icono',
@@ -69,12 +69,21 @@ module.exports = {
     // Paths
     assetsRoot: BuildPath,
     assetsSubDirectory: 'static',
-    assetsPublicPath: assetsPublicPath,
+    assetsPublicPath: '/admin/',
     apiSubDirectory: 'api',
     /**
      * Source Maps
      */
-
+     proxyTable:
+     {
+      
+       '/static': {
+         target: '/admin/static',
+         changeOrigin: true,
+         pathRewrite: { '^/static': '' }
+       }
+ 
+     },
     productionSourceMap: false,
     // https://webpack.js.org/configuration/devtool/#production
     devtool: '#source-map',

@@ -4,8 +4,8 @@ import { __esModule } from 'luxon';
 const subscription = async () => { 
   // Service Worker
   console.log("Registering a Service worker");
-  const register = await navigator.serviceWorker.register("/static/notificacion.worker.js", {
-    scope: "/static/"
+  const register = await navigator.serviceWorker.register("/admin/static/notificacion.worker.js", {
+    scope: "/admin/static/"
   });
   console.log("New Service Worker");
 

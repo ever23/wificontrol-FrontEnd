@@ -1,13 +1,9 @@
 <template>
 <!-- /.login-logo -->
 <div class="card card-outline card-primary">
-    <button type="submit" class="btn btn-primary btn-block" @click="formLogin=!formLogin">
-        <div v-if="!formLogin">Ingresar</div>
-        <div v-if="formLogin">Registrar</div>
-    </button>
-    <login-form v-if="formLogin"></login-form>
-    <registro-equipo-login @registro="registroEquipo" v-if="!formLogin && !isEquipo"></registro-equipo-login>
-    <item-equipo-login :item="equipo" :costoHora="3" v-if="isEquipo && !formLogin"></item-equipo-login>
+    
+    <login-form ></login-form>
+    
 </div>
 <!-- /.card -->
 </template>
