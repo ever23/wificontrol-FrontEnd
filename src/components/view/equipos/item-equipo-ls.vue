@@ -4,7 +4,7 @@
     <td>
         <div @click="activarFormTiempo">{{ tiempoEquipo }}</div>
         <div v-if="formTiempo">
-            <input type="range" v-model="tiempoFloat" class="custom-range" @input="calcularTiempo" @change="actualizar" step="0.5" max="5" min="0">
+            <input type="range" v-model="tiempoFloat" class="custom-range" @input="calcularTiempo" @change="actualizarTiempo" step="0.5" max="5" min="0">
         </div>
     </td>
     <td>{{ equipo.costo }}</td>
@@ -32,7 +32,7 @@
     <td >
     <div class="btn-group">
         
-        <button class="btn btn-primary btn-sm" type="button" v-if="formPago" @click="actualizar"><i class="fa fa-edit"></i></button>
+        <button class="btn btn-primary btn-sm" type="button" v-if="formPago" @click="actualizarPago"><i class="fa fa-edit"></i></button>
         <button class="btn btn-primary btn-sm" type="button" @click="eliminar"><i class="fa fa-trash"></i></button>
 </div>
     </td>

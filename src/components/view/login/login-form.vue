@@ -80,7 +80,7 @@ export default {
                         name: 'inicio'
                     } : this.redirect)
                     this.$store.commit('loading', false);
-                    if (data.login) {
+                    if (data.login) { 
                         //console.log('inicio');
 
                         this.$router.push(!this.redirect ? {

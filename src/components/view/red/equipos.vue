@@ -1,7 +1,7 @@
 <template>
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Dispositivos Wifi</h3>
+        <h3 class="card-title">{{titulo}}</h3>
     </div>
     <!-- /.card-header -->
     <div class="card-body p-0">
@@ -18,6 +18,10 @@
             </thead>
             <tbody>
                 <wifi-item v-for="item in wifi" :item="item" :key="item.ip"></wifi-item>
+                 <tr v-if="!conexionRouter">
+                    <th colspan="6">Conectando con el router.....</th>
+                    
+                </tr>
             </tbody>
         </table>
     </div>
@@ -37,9 +41,25 @@ export default {
         wifi: {
             type: Array,
             required: true
+        },
+        titulo: {
+            type: String,
+            required: false,
+             default: "Dispositivos Wifi"
         }
     },
-    name: 'wifi-equipos'
+    name: 'wifi-equipos',
+    data(){
+        return {
+            conexionRouter:false
+        }
+    },
+    created(){
+        this.sockets.subscribe('ok-conexion', () => {
+             this.conexionRouter=true
+
+        });
+    }
   
 }
 </script>

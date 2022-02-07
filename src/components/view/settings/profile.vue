@@ -11,8 +11,8 @@
     <table class="table ">
       <tbody>
         <tr>
-          <th>Nombres y apellidos</th>
-          <td>{{ user.nombres }} {{ user.apellidos }}</td>
+          <th>Nombres </th>
+          <td>{{ user.nombre }} </td>
         </tr>
         <tr>
           <th>Nombre de usuarios</th>

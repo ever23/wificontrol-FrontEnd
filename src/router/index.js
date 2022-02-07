@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import admin from './admin.js'
 import login from './login.js'
+import cliente from './cliente.js'
 import Admin404 from '@/components/view/Admin404.vue'
 Vue.use(Router);
 
@@ -9,8 +10,11 @@ Vue.use(Router);
 export default new Router({
     routes: [
        
-        login,
+       
         admin,
+        login,
+        cliente,
+       
         {
             path: '*',
             name: '404',

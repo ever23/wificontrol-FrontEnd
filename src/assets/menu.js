@@ -7,12 +7,22 @@ export default [
       },
       {
         "expanded":"",
-        "title":"Wifi",
+        "title":"Alquiler",
         "icon":"fa-wifi",
         "menu":[
         
           {"to":"clientes","name":"clientes",icon:"fa-mobile"},
           {"to":"equipos","name":"Resumen",icon:"fa-list-alt"},
+        ]
+      },
+      {
+        "expanded":"",
+        "title":"Red",
+        "icon":"fa-wifi",
+        "menu":[
+        
+          {"to":"invitados","name":"Invitados",icon:"fa-mobile"},
+          {"to":"privados","name":"Interna",icon:"fa-list-alt"},
         ]
       }/*,
 

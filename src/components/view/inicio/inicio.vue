@@ -196,7 +196,7 @@ import Autocomplete from 'vue2-autocomplete-js';
 import itemEquipo from '../equipos/item-equipo.vue'
 import registro from '../equipos/registro-tr.vue'
 import registroPendiente from '../equipos/registro-pendiente-tr.vue'
-import wifiEquipos from '../wifi/equipos.vue'
+import wifiEquipos from '../red/equipos.vue'
 export default {
     filters: filter,
     components: {
@@ -218,13 +218,19 @@ export default {
         }
     },
     created() {
+
         this.sockets.subscribe('equipos', (data) => {
             this.wifi = data
 
         });
-        setInterval(e => {
+        this.sockets.subscribe('/equipo/registro', (data) => {
+            console.log(data)
+            this.equipos.unshift(data)
+            this.actualizar()
+            this.$socket.emit('desbloquear', data.mac,data.nombre)
 
-        }, 5000)
+        });
+
     },
     mounted() {
         this.actualizar()
@@ -244,15 +250,12 @@ export default {
     methods: {
         registroEquipo(equipo) {
             this.formActive = false
-            this.equipos.unshift(equipo)
-            this.actualizar()
+
         },
         registroEquipoPendiente(equipo) {
 
-            this.equipos.unshift(equipo)
             this.equiposPendientes = this.equiposPendientes.filter(item => item.mac != equipo.mac)
-            this.$socket.emit('desbloquear', equipo.mac)
-            this.actualizar()
+
             this.formActive = false
         },
         actualizar() {
@@ -284,6 +287,9 @@ export default {
         cargarLista() {
 
             axios.get('/api/equipos/hoy').then(data => {
+                if (data.error) {
+                    return AxiosCatch(data.error)
+                }
                 this.equipos = data.data;
 
             }).catch(e => {
@@ -291,7 +297,9 @@ export default {
 
             })
             axios.get('/api/equipos/estadisticas').then(d => {
-
+                if (d.error) {
+                    return AxiosCatch(data.error)
+                }
                 this.estadisticas = d.data
 
             }).catch(AxiosCatch)

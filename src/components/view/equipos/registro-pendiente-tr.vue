@@ -2,11 +2,11 @@
 <tr>
     <td>
         <div>
-            <span :alt="wifi.mac"> IP {{ wifi.ip }} {{ wifi.nombre }} </span>
+            <span :alt="wifi.mac"> IP {{ wifi.ip }}</span>
         </div>
-        <button v-if="!formActivecliente" class="btn  btn-primary" @click="formActivecliente=true"> {{newEquipo.nombre}}</button>
+        <button v-if="!formActivecliente" class="btn  btn-primary" @click="formActivecliente=true;newEquipo.id_cliente=null"> {{newEquipo.nombre}}</button>
 
-        <autocomplete v-if="formActivecliente" :initValue="newEquipo.nombre" :url="api" :onShouldGetData="bucarCliente" anchor="nombre" label="writer" :classes="{ wrapper: 'form-wrapper', input: 'form-control', list: 'data-list', item: 'data-list-item' }" :on-select="getData" :onInput="d=>newEquipo.nombre=d">
+        <autocomplete v-if="formActivecliente" :initValue="wifi.nombre" :url="api" :onShouldGetData="bucarCliente" anchor="nombre" label="writer" :classes="{ wrapper: 'form-wrapper', input: 'form-control', list: 'data-list', item: 'data-list-item' }" :on-select="getData" :onInput="d=>newEquipo.nombre=d">
         </autocomplete>
 
     </td>
@@ -50,7 +50,7 @@
 <script>
 import axios from 'axios'
 import registro from './registro-tr.vue'
-import itemWifi from '../wifi/item.vue'
+import itemWifi from '../red/item.vue'
 export default {
 
     name: 'registro-pendiente-tr',
@@ -78,6 +78,9 @@ export default {
                 this.newEquipo.nombre = result.data.nombre
                 this.newEquipo.id_cliente = result.data.id_cliente
                 this.formActivecliente = false
+            }else{
+                 this.newEquipo.nombre =  this.wifi.nombre
+                  this.formActivecliente = true
             }
 
         }).catch(AxiosCatch)

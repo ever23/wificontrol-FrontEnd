@@ -3,24 +3,15 @@
 		<h3> Editar usuario</h3>
 		<formulario :error="errores"   @submit.prevent="editar">
             <div class="form-group">
-                <label class="control-label">Nombres</label>
-                <input class="form-control" v-model="user.nombres" name="nombres" type="text" placeholder="Nombres">
+                <label class="control-label">Nombre</label>
+                <input class="form-control" v-model="user.nombre" name="nombres" type="text" placeholder="Nombres">
             </div>
-            <div class="form-group">
-                <label class="control-label">Apellidos</label>
-                <input class="form-control" v-model="user.apellidos" name="apellidos" type="text" placeholder="Apellidos">
-            </div>
+         
             <div class="form-group">
                 <label class="control-label">Nombre de usuario</label>
                 <input class="form-control" v-model="user.user" name="user" type="text" placeholder="Nombre de usuario">
             </div>
-             <div class="form-group" v-if="isRoot">
-	                  <label class="control-label">Permisos</label>
-	                  <select class="form-control"  v-model="user.permisos" name="permisos">
-	                	<option value="root">Root</option>
-	                	<option value="admin">Administrador</option>
-	                  </select>
-	                </div>
+           
            <div class="form-group">
 	              <button class="btn btn-primary" type="submit">
 	              	<i class="fa fa-fw fa-lg fa-check-circle"></i>Guardar

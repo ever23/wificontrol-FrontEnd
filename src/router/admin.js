@@ -6,6 +6,15 @@ import equipos from '@/components/view/equipos/equipos.vue'
 //import registoEquipo from '@/components/view/equipos/registro.vue'
 //clientes
 import clientes from '@/components/view/clientes/clientes.vue'
+
+//clientes
+import Red from '@/components/view/red/red.vue'
+import Invitados from '@/components/view/red/invitados.vue'
+import Privados from '@/components/view/red/privados.vue'
+
+
+
+import defaultLayaut from '@/components/layaut/default-layaut.vue'
 //404
 import Admin404 from '@/components/view/Admin404.vue'
 import error401 from '@/components/view/Admin401.vue'
@@ -24,15 +33,22 @@ import $store from '@/store'
 import path from 'path'
 export default
 {
-    path: path.join($store.getters.ApiServer,'/'),
+    path: path.join($store.getters.ApiServer,'/admin'),
     component:admin,
     children:
     [
         //{ path: '/',name:'registro', component: registoEquipo },
         { path: '/',name:'inicio', component: inicio },
-        { path: '/equipos',name:'equipos', component: equipos },
-        { path: '/clientes',name:'clientes', component: clientes },
-
+        { path: 'equipos',name:'equipos', component: equipos },
+        { path: 'clientes',name:'clientes', component: clientes },
+        {
+            path: 'Red',
+            component:defaultLayaut,
+            children:[
+                { path: 'invitados', name: 'invitados',component:Invitados},
+                { path: 'privados', name: 'privados',component:Privados}
+            ]
+        },
       
         //perfill
         {
@@ -48,15 +64,10 @@ export default
                 { path: 'usuarios/editar', name:'editar-usuario', component:editar_usuario,props:true},
                 { path: 'usuarios/contraseña', name:'editar-contrasena', component:editar_contrasena},
                 { path: '401', name:'401', component:error401,props:true},
-               { path:'*',name:'404',component:login404},
+               
                // { path:'*',name:'Admin404',component:Admin404},
 
             ]
-        },
-
-
-
-        //404
-        { path:'*',name:'Admin404',component:Admin404},
+        }
     ]
 }

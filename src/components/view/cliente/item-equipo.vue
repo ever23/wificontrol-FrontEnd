@@ -4,7 +4,7 @@
     <td>
         <div @click="activarFormTiempo">{{ tiempoEquipo }}</div>
         <div v-if="formTiempo">
-            <input type="range" v-model="tiempoFloat" class="custom-range" @input="calcularTiempo" @change="actualizarTiempo" step="0.5" max="5" min="0">
+            <input type="range" v-model="tiempoFloat" class="custom-range" @input="calcularTiempo" @change="actualizar" step="0.5" max="5" min="0">
         </div>
     </td>
     <td>{{ equipo.costo }}</td>
@@ -38,7 +38,7 @@
         <div class="btn-group">
             <button class="btn btn-primary btn-sm" type="button" v-if="equipo.cierre=='Indefinido'" @click="cerrar"><i class="fa fa-window-close"></i></button>
             <button class="btn btn-primary btn-sm" type="button" v-if="estaAsignado" @click="asignarEquipo"><i class="fa fa-thumbtack"></i></button>
-            <button class="btn btn-primary btn-sm" type="button" v-if="formPago" @click="actualizarPago"><i class="fa fa-edit"></i></button>
+            <button class="btn btn-primary btn-sm" type="button" v-if="formPago" @click="actualizar"><i class="fa fa-edit"></i></button>
             <button class="btn btn-primary btn-sm" type="button" @click="eliminar"><i class="fa fa-trash"></i></button>
         </div>
     </td>
@@ -95,10 +95,6 @@ export default {
                 this.equipo.costo = (this.horaFloat(this.tiempoIndefinido) * this.costoHora).toLocaleString('en')
             }, 1000)
         }
-        this.sockets.subscribe("/equipo/update/" + this.equipo.id_equipo, (data) => {
-            this.equipo = data
-
-        })
 
     },
     computed: {
@@ -163,11 +159,8 @@ export default {
                         activo: false
 
                     }
-this.$store.commit('loading', true);
-                    axios.put('/api/equipos/cerrar', {
-                        id_equipo: this.equipo.id_equipo
-                    }).then(d => {
-                        this.$store.commit('loading', false);
+                     this.$store.commit('loading', true);
+                    axios.put('/api/equipos/cerrar', {id_equipo: this.equipo.id_equipo}).then(d => {
                         clearInterval(this.intervalIndefinido)
                         this.equipo.tiempo = update.tiempo
                         this.equipo.cierre = update.cierre
@@ -178,13 +171,11 @@ this.$store.commit('loading', true);
                         this.formTiempo = this.formPago = false
                         this.progreso(this.equipo.tiempo, this.equipo.cierre)
                         this.$forceUpdate()
+                         this.$store.commit('loading', falses);
                         this.$emit("update", this.equipo);
                         Swal.fire('Actualizado!', '', 'success')
                         this.$socket.emit('bloquear', this.equipo.mac)
-                    }).catch(e=>{
-                        AxiosCatch(e)
-                        this.$store.commit('loading', false);
-                        })
+                    }).catch(AxiosCatch)
 
                 } else {
 
@@ -231,86 +222,6 @@ this.$store.commit('loading', true);
             this.formPago = true
             this.last = Object.assign({}, this.equipo)
         },
-        actualizarTiempo() {
-            Swal.fire({
-                title: 'Cambiar el tiempo?',
-                showDenyButton: true,
-                confirmButtonText: 'si'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.$store.commit('loading', true);
-
-                    let update = {
-                        id_equipo: this.equipo.id_equipo,
-                        tiempo: this.equipo.tiempo
-                    }
-                    axios.put('/api/equipos/tiempo', update).then(d => {
-                        this.$store.commit('loading', false);
-                        this.formTiempo = false
-                        if (d.data.ok) {
-                            this.$emit("update", this.equipo);
-                            if (d.data.equipo.activo) {
-                                this.$socket.emit('desbloquear', this.equipo.mac)
-                            } else {
-                                this.$socket.emit('bloquear', this.equipo.mac)
-                            }
-                            Swal.fire('Actualizado!', '', 'success')
-
-                        } else {
-                            AxiosCatch("no se actualizo")
-                            this.formTiempo = false
-                            this.equipo = Object.assign({}, this.last)
-                            this.tiempo(this.equipo, this.equipo.apertura)
-                        }
-
-                    }).catch(e => {
-                        AxiosCatch(e)
-                        this.$store.commit('loading', false);
-                    })
-
-                } else {
-                    this.formTiempo = false
-                    this.equipo = Object.assign({}, this.last)
-                    this.tiempo(this.equipo, this.equipo.apertura)
-                }
-            })
-        },
-        actualizarPago() {
-
-            Swal.fire({
-                title: 'Cambiar el pago?',
-                showDenyButton: true,
-                confirmButtonText: 'si'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.$store.commit('loading', true);
-
-                    let update = {
-                        id_equipo: this.equipo.id_equipo,
-                        tPago: this.equipo.tPago,
-                        referencia: this.equipo.referencia,
-                    }
-                    axios.put('/api/equipos/pago', update).then(d => {
-
-                        this.formPago = false
-                        this.$emit("update", d.data.equipo);
-
-                        Swal.fire('Actualizado!', '', 'success')
-                        this.$store.commit('loading', false);
-
-                    }).catch(e => {
-                        AxiosCatch(e)
-                        this.$store.commit('loading', false);
-                    })
-
-                } else {
-                    this.formTiempo = this.formPago = false
-                    this.equipo = Object.assign({}, this.last)
-                    this.tiempo(this.equipo, this.equipo.apertura)
-                }
-            })
-
-        },
         actualizar() {
 
             Swal.fire({
@@ -348,7 +259,7 @@ this.$store.commit('loading', true);
                         Swal.fire('Actualizado!', '', 'success')
                         this.$store.commit('loading', false);
                         if (this.activo) {
-                            this.$socket.emit('desbloquear', this.equipo.mac)
+                           this.$socket.emit('desbloquear', this.equipo.mac)
                         }
                     }).catch(e => {
                         AxiosCatch(e)
@@ -415,7 +326,7 @@ this.$store.commit('loading', true);
 
         },
         desactivar() {
-
+            this.$emit("update", this.equipo);
             /*axios.put('/api/equipos/desactivar', {
                 id_equipo
             }).then(data => {}).catch(AxiosCatch)*/

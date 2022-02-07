@@ -1,20 +1,29 @@
 # WifiControl Front-End
 
->  Sistema de control para el alquler de wifi por hora 
+> Sistema de control para el alquler de wifi por hora 
+> Se sirve de la api [Back-End](https://github.com/ever23/wificontrol-BackEnd)
 
-## Build Setup
+![login](./screenshot/login.jpg)
+![inicio](./screenshot/inicio.jpg)
+
+## Tecnoclogias usadas
+
+> vue.js, html, css, socket.io
+
+## Requerimientos 
+
+1. node.js>=v14.17.6
+2. npm
+
+## Intalaccion
 
 ``` bash
-# install dependencies
+# Instalar dependecias 
 npm install
 
-# serve with hot reload at localhost:8080
+# inicia un servidor de desarrollo en localhost:8081
 npm run dev
 
-# build for production with minification in folder up
-npm run build
+# compilacion 
+npm run buld
 
-# build for production and view the bundle analyzer report
-npm run build --report
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).

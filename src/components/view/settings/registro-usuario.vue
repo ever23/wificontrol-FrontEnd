@@ -90,7 +90,7 @@ export default {
             axios.post('/api/user/registro', this.user)
                 .then(request => {
                     this.$store.commit('loading', false);
-                    if (request.data.insert) {
+                    if (request.data.ok) {
                         
                         /*swal({
                                 title: "Listo!",

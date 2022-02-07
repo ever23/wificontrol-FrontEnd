@@ -34,7 +34,6 @@
 
                     </td>
                     <td>{{ user.user }} </td>
-                    <td>{{ user.permisos }}</td>
 
                     <td class="btn-group">
                         <router-link class="btn btn-primary btn-sm" :to="{name:'editar-usuario',params:{id_usuarios:user.id_usuarios}}"><i class="fa fa-edit"></i></router-link>

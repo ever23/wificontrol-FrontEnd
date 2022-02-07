@@ -12,7 +12,9 @@ function getLocalStorageEquipo() {
         referencia: null,
         apertura:null,
         cierre: null,
-        activo: null
+        activo: null,
+        ip: null,
+        mac: null
     }
     let result= null
     try {
@@ -108,6 +110,7 @@ export default
                     state.cierre = null
                     state.activo = null
                     state.ip = null
+                     state.mac =  equipo.mac
                 }
                 setLocalStorageEquipo(state)
 
@@ -121,12 +124,12 @@ export default
         actions:
         {
             verificarEquipo(context) {
-
+                console.log('verificando')
                 if (context.state.id_equipo) {
 
                     context.dispatch('actualizarEquipo')
 
-                } else if (context.state.id_cliente) {
+                } else if (context.state.mac) {
 
                     context.dispatch('equipoCliente')
 
@@ -139,15 +142,16 @@ export default
             actualizarEquipo(context) {
                 let id_equipo = context.state.id_equipo
                 axios.get('/api/equipos/equipo?id_equipo=' + id_equipo).then(d => {
-                    
                     context.commit("fijarEquipo", d.data);
+                   
+                   
                     
                 }).catch(AxiosCatch)
             },
             equipoCliente(context) {
                 axios.get('/api/equipos/mac-activa?mac=' + context.state.mac).then(d => {
 
-                    if (!d.data.error) {
+                    if (!d.data.error && d.data.mac) {
 
                         context.commit("fijarEquipo", d.data);
 

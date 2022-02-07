@@ -5,7 +5,7 @@
         <td>{{ cliente.nombre }}</td>
         <td>{{ cliente.activos }}</td>
         <td>{{ cliente.conecciones }}</td>
-          <td>{{ cliente.deuda }} Bs</td>
+        <td>{{ cliente.deuda }} Bs</td>
         <td>
             <button class="btn btn-primary btn-sm" type="button" @click="eliminar"><i class="fa fa-trash"></i></button>
         </td>
@@ -53,12 +53,24 @@
                             </thead>
 
                             <tbody>
-                                <item-equipo @update="update" :costoHora="costoHora" v-for="equipo in equipos" :item="equipo" :key="equipo.id_equipo"></item-equipo>
+                                <item-equipo @update="update" :costoHora="costoHora" v-for="(equipo,index) in equipos" :item="equipo" :key="equipo.id_equipo" v-show="(pag - 1) * NUM_RESULTS <= index  && pag * NUM_RESULTS > index"></item-equipo>
                             </tbody>
                         </table>
                     </div>
                 </div>
                 <!-- /.card-body -->
+                <div class="card-footer clearfix">
+                    <a href="javascript:void(0)" class="btn btn-sm btn-info float-left">Place New Order</a>
+                    <div class="dataTables_paginate paging_simple_numbers float-right" id="example2_paginate">
+                        <ul class="pagination">
+                            <li :class="'paginate_button page-item previous '+classPrevius" id="example2_previous"><a href="#" class="page-link" @click.prevent="pagePrevius">Atras</a></li>
+
+                            <li :class="'paginate_button page-item next '+classNext" id="example2_next">
+                                <a href="#" class="page-link" @click.prevent="pageNext">SIgiente</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
         </td>
@@ -102,7 +114,9 @@ export default {
             expandido: false,
             costoHora: 3,
             deudas: null,
-            eliminado:false
+            eliminado: false,
+            NUM_RESULTS: 8, // Numero de resultados por página
+            pag: 1,
         }
     },
     created() {
@@ -113,13 +127,22 @@ export default {
 
     },
     methods: {
-        update(){
-            this.expandido=false
+        pagePrevius() {
+            if (this.pag > 1)
+                this.pag -= 1
+        },
+        pageNext() {
+            if (this.pag < this.equipos.length)
+                this.pag += 1
+        },
+
+        update() {
+            this.expandido = false
             this.expandir()
             this.$emit("update");
         },
         eliminar() {
-           
+
             Swal.fire({
                 title: 'Desea eliminar el registro?',
                 showDenyButton: true,
@@ -141,11 +164,11 @@ export default {
         },
         expandir() {
             this.expandido = !this.expandido
-            this.cliente.deuda = 0
-            if (this.expandido) {
 
+            if (this.expandido) {
+                this.cliente.deuda = 0
                 axios.get('/api/equipos/cliente?id_cliente=' + this.cliente.id_cliente).then(data => {
-                    this.equipos = data.data;
+                    this.equipos = data.data
                     for (let equipo of data.data) {
                         // console.log(this.equipos)
                         if (equipo.tPago == '') {

@@ -165,10 +165,7 @@ export default {
                     ip:"",
                     mac:""
                 }
-                this.$socket.emit('renombrar', {
-                    MAC: equipo.mac,
-                    nombre: equipo.nombre
-                })
+                
                 this.actualizar(equipo)
                 this.$store.commit('loading', false);
             }).catch(e => {

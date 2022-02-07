@@ -2,7 +2,8 @@
 <!-- /.login-logo -->
 <div class="card card-outline card-primary">
     
-    <login-form ></login-form>
+    <login-form v-if="!formRegistro"></login-form>
+    <registro-form v-if="formRegistro"></registro-form>
     
 </div>
 <!-- /.card -->
@@ -11,39 +12,36 @@
 <script>
 import axios from 'axios'
 import loginForm from './login-form.vue'
-import registroEquipo from '../equipos/registro-login.vue'
-import itemEquipoLogin from '../equipos/item-equipo-login.vue'
+import registro from './registro-form.vue'
 export default {
     name: 'login',
     components: {
         loginForm,
-        'registro-equipo-login':registroEquipo,
-        itemEquipoLogin
+        'registro-form':registro,
     },
     props: ['redirect'],
     data() {
         return {
-            formLogin: false
+            formRegistro: false
         }
     },
     mounted() {
-        this.$store.dispatch('verificarEquipo')
+        
     },
     created() {
+        axios.get('/api/user/isNew').then(result=>{
+            if(result.data.ok==false){
+                this.formRegistro=true
+
+            }
+        })
 
     },
     computed: {
-        isEquipo() {
-            return this.$store.getters.isActivo
-        },
-        equipo() {
-            return this.$store.getters.equipo
-        }
+       
     },
     methods: {
-        registroEquipo(equipo) {
-            this.$store.dispatch('fijarEquipo', equipo)
-        }
+        
     }
 }
 </script>

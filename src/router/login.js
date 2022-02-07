@@ -15,8 +15,7 @@ export default
     [
         { path: '/',name:'login', component: login,props: route =>{return { redirect: route.query.redirect }} },
         { path: 'recupera-password',name:'RecuperaPass', component: recuperapass },
-        { path: 'lockscreen',name:'LockScreen',component:LockScreen,props:true},
-        { path:'*',name:'Login404',component:Admin404},
+        { path: 'lockscreen',name:'LockScreen',component:LockScreen,props:true}
     ],
     meta: {
         isPublic: true
