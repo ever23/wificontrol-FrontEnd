@@ -3,7 +3,7 @@
 > Sistema de control para el alquler de wifi por hora 
 > Se sirve de la api [Back-End](https://github.com/ever23/wificontrol-BackEnd)
 
-![login](./screenshot/login.jpg)
+![login](./screenshot/login.png)
 ![inicio](./screenshot/inicio.jpg)
 
 ## Tecnoclogias usadas
