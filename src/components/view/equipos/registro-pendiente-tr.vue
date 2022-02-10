@@ -33,9 +33,9 @@
         </select>
     </td>
     <td><input type="text" class="form-control" v-model="newEquipo.referencia"></td>
-    <td> {{ newEquipo.apertura }} </td>
-    <td> {{ newEquipo.cierre }}</td>
-    <th></th>
+    <td class="d-none d-md-none d-lg-table-cell"> {{ newEquipo.apertura }} </td>
+    <td class="d-none d-md-none d-lg-table-cell"> {{ newEquipo.cierre }}</td>
+    <th class="d-none d-md-none d-lg-table-cell"></th>
     <td>
 
         <div class="btn-group">
@@ -49,7 +49,7 @@
 
 <script>
 import axios from 'axios'
-import registro from './registro-tr.vue'
+import registro from './registro.vue'
 import itemWifi from '../red/item.vue'
 export default {
 
@@ -67,6 +67,7 @@ export default {
         }
     },
     created() {
+         this.costoHora = this.$store.getters.configuraciones.costo_hora
        
         this.api = axios.defaults.baseURL + '/api/clientes/busqueda'
         this.wifi = this.item

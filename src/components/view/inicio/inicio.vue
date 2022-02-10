@@ -78,22 +78,22 @@
     </div>
     <div class="card">
         <div class="card-header border-transparent">
-            <h3 class="card-title">Equipos Conectados</h3>
-
+            <h3 class="card-title">Equipos Conectados </h3><br>
+            <span class="badge badge-warning" >Pendientes {{pendientes}}</span>
             <div class="card-tools">
-                <button type="button" class="btn btn-tool" @click="activarFormulario">
+                
+                <button type="button" class="btn btn-tool d-none d-md-none d-lg-table-cell" @click="activarFormulario">
                     <i class="fas fa-plus" v-if="!formActive"></i>
                     <i class="fas fa-chevron-up" v-if="formActive"></i>
                 </button>
-                <button type="button" class="btn btn-tool">
-                    <i class="fas fa-times"></i>
-                </button>
+                <router-link class="btn btn-tool d-block d-md-block d-lg-none" :to="{name:'registro'}">
+                    <i class="fas fa-plus"></i>
+                </router-link>
+
             </div>
         </div>
-
         <!-- /.card-header -->
         <div class="card-body p-0">
-
             <div class="table-responsive">
                 <table class="table m-0">
                     <thead>
@@ -101,11 +101,11 @@
                             <th>Nombre</th>
                             <th>tiempo</th>
                             <th>Costo</th>
-                            <th>Tipo de pago</th>
-                            <th>Referencia</th>
-                            <th>Apertura</th>
-                            <th>Cierre</th>
-                            <th>Estado</th>
+                            <th  class="d-none d-md-none d-lg-table-cell">Tipo de pago</th>
+                            <th  class="d-none d-md-none d-lg-table-cell">Referencia</th>
+                            <th class="d-none d-md-none d-lg-table-cell">Apertura</th>
+                            <th class="d-none d-md-none d-lg-table-cell">Cierre</th>
+                            <th class="d-none d-md-none d-lg-table-cell">Estado</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -194,14 +194,12 @@ import {
 } from 'luxon'
 import Autocomplete from 'vue2-autocomplete-js';
 import itemEquipo from '../equipos/item-equipo.vue'
-import registro from '../equipos/registro-tr.vue'
 import registroPendiente from '../equipos/registro-pendiente-tr.vue'
 import wifiEquipos from '../red/equipos.vue'
 export default {
     filters: filter,
     components: {
         itemEquipo,
-        'registro-equipo-tr': registro,
         'registro-pendiente-tr': registroPendiente,
         wifiEquipos
     },
@@ -227,7 +225,7 @@ export default {
             console.log(data)
             this.equipos.unshift(data)
             this.actualizar()
-            this.$socket.emit('desbloquear', data.mac,data.nombre)
+            this.$socket.emit('desbloquear', data.mac, data.nombre)
 
         });
 
@@ -239,6 +237,20 @@ export default {
         //this.$('.select2').select2()
     },
     computed: {
+        pendientes() {
+            let count = 0
+            let equiposActivos = this.equipos.filter(equipo => equipo.activo)
+            for (let wifi of this.wifi.filter(w => !w.bloqueado)) {
+
+                let activo = equiposActivos.find(equipo => equipo.mac == wifi.mac);
+
+                if (activo == undefined) {
+
+                    count+=1
+                }
+            }
+            return count;
+        },
         getEquipos() {
             return this.equipos;
         },

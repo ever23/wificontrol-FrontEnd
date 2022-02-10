@@ -1,52 +1,66 @@
 <template>
-<div>
-    <div class="mailbox-controls">
-        <div class="animated-checkbox">
-        </div>
-        <div class="btn-group">
-            <router-link class="btn btn-primary btn-sm" :to="{name:'registro-usuario'}"><i class="fa fa-plus"></i>Agregar usuario</router-link>
+<div class="card card-primary card-outline">
+    <div class="card-header border-transparent">
+        <h3 class="card-title">Usuarios</h3>
+
+        <div class="card-tools">
+
+            <div class="btn-group">
+                <router-link class="btn btn-primary btn-sm" :to="{name:'registro-usuario'}"><i class="fa fa-plus"></i>Agregar usuario</router-link>
+            </div>
         </div>
     </div>
-    <div class="table -responsive mailbox-messages">
-        <table class="table  table-hover table-bordered" ref="tabla">
-            <thead>
-                <tr class="info">
-                    <td>
-                        Nombre
-                    </td>
-                    <td>
-                        Usuario
-                    </td>
 
-                    <td>
+    <!-- /.card-header -->
+    <div class="card-body p-0">
 
-                    </td>
+        <div class="table-responsive">
+            <table class="table  table-hover">
+                <thead>
+                    <tr class="info">
+                        <td>
+                            Nombre
+                        </td>
+                        <td>
+                            Usuario
+                        </td>
 
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="user in usuarios" ref="items">
+                        <td>
 
-                    <td>
-                        <a :href="user.url_user">
-                            {{ user.nombre }}
-                        </a>
+                        </td>
 
-                    </td>
-                    <td>{{ user.user }} </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="user in usuarios" ref="items">
 
-                    <td class="btn-group">
-                        <router-link class="btn btn-primary btn-sm" :to="{name:'editar-usuario',params:{id_usuarios:user.id_usuarios}}"><i class="fa fa-edit"></i></router-link>
-                        <button class="btn btn-primary btn-sm" type="button" @click="eliminar(user)"><i class="fa fa-trash"></i></button>
+                        <td>
+                            <a :href="user.url_user">
+                                {{ user.nombre }}
+                            </a>
 
-                        <!--<button class="btn btn-primary btn-sm" type="button" @click="permisos(user)"><i class="fa fa-refresh"></i></button>-->
+                        </td>
+                        <td>{{ user.user }} </td>
 
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                        <td>
+                            <div class="btn-group">
+                               <!-- <router-link class="btn btn-primary btn-sm" :to="{name:'editar-usuario',params:{id_usuarios:user.id_usuarios}}"><i class="fa fa-edit"></i></router-link>
+                               --> <button class="btn btn-primary btn-sm" type="button" @click="eliminar(user)"><i class="fa fa-trash"></i></button>
+
+                                <!--<button class="btn btn-primary btn-sm" type="button" @click="permisos(user)"><i class="fa fa-refresh"></i></button>-->
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- /.table-responsive -->
     </div>
-
+    <!-- /.card-body -->
+    <div class="card-footer clearfix">
+        
+    </div>
+    <!-- /.card-footer -->
 </div>
 </template>
 
@@ -79,24 +93,22 @@ export default {
                 });
         },
         eliminar(user) {
-            swal({
-                title: "Eliminar Usuario",
-                text: "Deseas eliminar el usuario " + user.nombres + "?",
-                type: "warning",
-                showCancelButton: true,
+            Swal.fire({
+                title: "Deseas eliminar el usuario " + user.nombre + "?",
+                showDenyButton: true,
                 confirmButtonText: "si, Eliminar!",
-                cancelButtonText: "No",
-                closeOnConfirm: true,
-                closeOnCancel: true
-            }, isConfirm => {
-                if (isConfirm) {
+                type: "warning",
+            }).then(result => {
+
+                if (result.isConfirmed) {
                     // delete(this.proyectos[index]);
                     this.$store.commit('loading', true);
-                    axios.delete('/api/user/eliminar?id_usuarios=' + user.id_usuarios)
+                    axios.delete('/api/user/?id_usuarios=' + user.id_usuarios)
                         .then(request => {
                             this.$store.commit('loading', false);
-                            if (request.data.eliminado) {
+                            if (request.data.ok) {
                                 this.usuarios = this.usuarios.filter(p => p.id_usuarios != user.id_usuarios);
+                                Swal.fire('Eliminado!', '', 'success')
                             } else {
                                 AxiosCatch(request.data.error);
                             }
@@ -104,7 +116,8 @@ export default {
                         })
                         .catch(AxiosCatch);
                 }
-            });
+            })
+
         },
         permisos(user) {
 

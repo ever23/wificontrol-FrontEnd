@@ -1,5 +1,5 @@
 <template>
-<nav class="main-header navbar navbar-expand navbar-dark">
+<nav :class="main_class">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
         <li class="nav-item">
@@ -47,12 +47,6 @@
             <ul class="dropdown-menu settings-menu dropdown-menu-right">
 
                 <li>
-                    <router-link class="dropdown-item" :to="{name:'perfil'}">
-                        <i class="fa fa-user fa-lg"></i> Profile
-                    </router-link>
-                </li>
-
-                <li>
                     <router-link class="dropdown-item" :to="{name:'settings'}">
                         <i class="fa fa-cog fa-lg"></i> Configuracion
 
@@ -66,13 +60,7 @@
                     </router-link>
 
                 </li>
-                <li>
-                    <router-link class="dropdown-item" :to="{name:'sessiones'}">
-                        <i class="fa fa-gears fa-lg"></i> Sesiones
 
-                    </router-link>
-
-                </li>
                 <li>
                     <a class="dropdown-item" href="#" @click.prevent="LogOut">
                         <i class="fa fa-sign-out fa-lg"></i> Logout
@@ -81,15 +69,12 @@
             </ul>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-                <i class="fas fa-expand-arrows-alt"></i>
-            </a>
+            <div class="custom-control custom-switch custom-switch-off custom-switch-on">
+                <input type="checkbox" @change="activar_oscuro" v-model="modo" class="custom-control-input" id="customSwitch-modo-oscuro">
+                <label class="custom-control-label" for="customSwitch-modo-oscuro"></label>
+            </div>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
-                <i class="fas fa-th-large"></i>
-            </a>
-        </li>
+
     </ul>
 </nav>
 <!-- Navbar-->
@@ -111,24 +96,32 @@ export default {
     data() {
         return {
             nombre: null,
-            datetime: null
+            datetime: null,
+            modo: false
         }
     },
     created() {
-        //this.$store.commit('loading',true);
-        axios.get('/api/settings/settings').then(req => {
-            //this.$store.commit('loading',false);
-            this.nombre = req.data.settings.nombre;
-            //console.log(this.config);
-        }).catch(AxiosCatch);
+        this.modo = this.$store.getters.configuraciones.modo_oscuro
         setInterval(e => {
             let time = DateTime.now()
             time.setLocale('es')
-            this.datetime = time.toFormat('dd ')+meses[Number(time.toFormat('L'))-1]+time.toFormat(' yyyy HH:mm')
+            this.datetime = time.toFormat('dd ') + meses[Number(time.toFormat('L')) - 1] + time.toFormat(' yyyy HH:mm')
         }, 1000)
     },
     components: {},
     computed: {
+        modo_oscuro() {
+            this.modo = this.$store.getters.configuraciones.modo_oscuro
+            return this.$store.getters.configuraciones.modo_oscuro
+        },
+        main_class() {
+            if (this.$store.getters.configuraciones.modo_oscuro) {
+                return 'main-header navbar navbar-expand navbar-dark';
+            } else {
+                return 'main-header navbar navbar-expand navbar-white';
+            }
+
+        },
 
         User() {
             return this.$store.getters.User;
@@ -149,6 +142,9 @@ export default {
         }
     },
     methods: {
+        activar_oscuro() {
+            this.$store.dispatch('cambiar_modo')
+        },
         sidebar() {
             this.$emit('sidebar');
         },

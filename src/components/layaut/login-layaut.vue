@@ -1,57 +1,51 @@
 <template>
-  <main class="hold-transition login-page dark-mode ">
+<main :class="main_class">
     <div class="login-box">
 
-          <router-view ></router-view>
-        
+        <router-view></router-view>
+
     </div>
-  </main>
+</main>
 </template>
 
 <script>
-  import axios from 'axios'
-    export default {
-        name:'login-layaut',
-        components: {
+import axios from 'axios'
+export default {
+    name: 'login-layaut',
+    components: {
 
-        },
-        data () {
-            return {
+    },
+    data() {
+        return {
 
-            }
-        },
-        created()
-        {
-
-        },
-        computed:
-        {
-            settings()
-            {
-              //  return this.$store.getters.settings;
-            },
-            nombre()
-            {
-
-                  //  return this.$store.getters.settings.nombre;
-
-            }
-        },
-        filters:
-        {
-            uppercase(data)
-            {
-                return data && data.toUpperCase();
-            }
         }
+    },
+    created() {
 
+    },
+    computed: {
+
+        main_class() {
+            if (this.$store.getters.configuraciones.modo_oscuro) {
+                return 'hold-transition login-page dark-mode';
+            } else {
+                return 'hold-transition login-page';
+            }
+
+        }
+    },
+    filters: {
+        uppercase(data) {
+            return data && data.toUpperCase();
+        }
     }
+
+}
 </script>
 
-<style scope>
-   .logo
-   {
+<style>
+.logo {
     margin-right: 20px;
     margin-right: 20px;
-   }
+}
 </style>

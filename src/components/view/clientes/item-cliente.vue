@@ -3,8 +3,8 @@
     <tr data-widget="expandable-table" aria-expanded="false" @click="expandir">
         <td>{{ cliente.id_cliente }}</td>
         <td>{{ cliente.nombre }}</td>
-        <td>{{ cliente.activos }}</td>
-        <td>{{ cliente.conecciones }}</td>
+        <td class="d-none d-md-none d-lg-table-cell">{{ cliente.activos }}</td>
+        <td class="d-none d-md-none d-lg-table-cell">{{ cliente.conecciones }}</td>
         <td>{{ cliente.deuda }} Bs</td>
         <td>
             <button class="btn btn-primary btn-sm" type="button" @click="eliminar"><i class="fa fa-trash"></i></button>
@@ -43,11 +43,11 @@
                                     <th>Nombre</th>
                                     <th>tiempo</th>
                                     <th>Costo</th>
-                                    <th>Tipo de pago</th>
-                                    <th>Referencia</th>
-                                    <th>Apertura</th>
-                                    <th>Cierre</th>
-                                    <th>Fecha</th>
+                                    <th class="d-none d-md-none d-lg-table-cell">Tipo de pago</th>
+                                    <th class="d-none d-md-none d-lg-table-cell">Referencia</th>
+                                    <th class="d-none d-md-none d-lg-table-cell">Apertura</th>
+                                    <th class="d-none d-md-none d-lg-table-cell">Cierre</th>
+                                    <th class="d-none d-md-none d-lg-table-cell">Fecha</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -79,11 +79,11 @@
 </template>
 
 <style>
-.card-item {
+.dark-mode .card-item {
     background-color: #212529 !important;
 }
 
-.thead {
+.dark-mode .thead {
     background-color: #3a4047 !important;
 }
 </style>

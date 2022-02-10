@@ -129,6 +129,7 @@ export default {
     },
 
     mounted() {
+        this.costoHora = this.$store.getters.configuraciones.costo_hora
         this.cargarWifi()
 
         //this.$('.select2').select2()

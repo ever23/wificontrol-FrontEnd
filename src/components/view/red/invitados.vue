@@ -16,64 +16,7 @@
         </div><!-- /.container-fluid -->
     </div>
 
-    <div class="row">
-        <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-info">
-                <div class="inner">
-                    <h3>Red</h3>
-
-                    <p>{{ redPublica.red}}</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-bag"></i>
-                </div>
-            </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-success">
-                <div class="inner">
-                    <h3> Contraseña</h3>
-
-                    <p>{{redPublica.password}}</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-stats-bars"></i>
-                </div>
-            </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-warning">
-                <div class="inner">
-                    <h3>Subida</h3>
-
-                    <p> {{redPublica.UploadSpeed}}</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-person-add"></i>
-                </div>
-            </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-danger">
-                <div class="inner">
-                    <h3>Bajada</h3>
-
-                    <p> {{redPublica.DownloadSpeed}}</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-pie-graph"></i>
-                </div>
-            </div>
-        </div>
-        <!-- ./col -->
-    </div>
+    <red-invitados></red-invitados>
 
     </div>
      <div class="row  justify-content-center">
@@ -99,23 +42,22 @@ import {
     DateTime
 } from 'luxon'
 import wifiEquipos from './equipos.vue'
+import red from './red-invitados.vue'
 export default {
     filters: filter,
     components: {
-        wifiEquipos
+        wifiEquipos,
+        "red-invitados":red
     },
     name: 'invitados',
     data() {
         return {
            
-            invitados: [],
-            redPublica: {}
+            invitados: []
         }
     },
     created() {
-        this.$socket.emit('informacionInvitados',e=>{
-            this.redPublica = e
-        })
+      
         this.sockets.subscribe('equipos', (data) => {
             this.invitados = data
 

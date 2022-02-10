@@ -3,39 +3,17 @@
 		<h3> Configuracion</h3>
 		<formulario :error="errores"   @submit.prevent="editar">
             <div class="form-group">
-                <label class="control-label">Nombre de granja</label>
-                <input class="form-control" v-model="config.nombre" name="nombre" type="text" placeholder="Ingresa nombre">
+                <label class="control-label">Url de acceso al router Mercusys</label>
+                <input class="form-control" v-model="config.url_router" name="url_router" type="url" placeholder="url">
             </div>
             <div class="form-group">
-                <label class="control-label">Porcentaje de uso minimo de los galpones</label>
-                <input class="form-control" v-model="config.usoGalpon" name="usoGalpon" type="text" placeholder="Ingresa porcentaje">
+                <label class="control-label">Contrasena de acesso al router</label>
+                <input class="form-control" v-model="config.pass_router" name="pass_router" type="text" placeholder="Contraseña">
             </div>
             <div class="form-group">
-                <label class="control-label">Porcentaje de muertes de aves aceptables </label>
-                <input class="form-control" v-model="config.muertes" name="muertes" type="text" placeholder="Ingresa porcentaje">
+                <label class="control-label">Precio por hora </label>
+                <input class="form-control" v-model="config.costo_hora" name="costo_hora" type="text" placeholder="Hora">
             </div>
-              <div class="form-group ">
-                <label class="control-label">Porcentaje de produccion de huevos minima </label>
-               
-                <input class="form-control" v-model="config.produccion" name="produccion" type="text" placeholder="Ingresa porcentaje">
-                 
-                 
-            </div>
-              <div class="form-group">
-                <label class="control-label">Moneda </label>
-                <input class="form-control" v-model="config.moneda" name="moneda" type="text" placeholder="Ingresa moneda">
-            </div>
-              <div class="form-group">
-                <label class="control-label">Unidad de medida para alimentos </label>
-                <input class="form-control" v-model="config.umalimentos" name="umalimentos" type="text" placeholder="Ingresa ">
-            </div>
-            <div class="form-group">
-		        <label class="control-label">Logo</label>
-		        <i class="fa fa-image"></i>
-		        <br>
-		        <input-image :src="imagen" @load="img"></input-image>
-	        </div>
-           
            <div class="form-group">
 	              <button class="btn btn-primary" type="submit">
 	              	<i class="fa fa-fw fa-lg fa-check-circle"></i>Guardar
@@ -55,14 +33,10 @@ import axios from 'axios'
 			return {
 				config:
 				{
-			        nombre:'',
-			        imagen:null,
-			        usoGalpon:0,
-			        moneda:'',
-			        muertes:0,
-			        umalimentos:'',
-			        produccion:0,
-			        Submited:1
+			        url_router:'', 
+			        pass_router:'',
+			        costo_hora:'',
+			        modo_oscuro:false
 				},
 				errores:{},
 				imagen:null
@@ -70,52 +44,29 @@ import axios from 'axios'
 		},
 		created() 
 		{
-			this.config.nombre=this.$store.getters.settings.nombre;
-			this.config.usoGalpon=this.$store.getters.settings.usoGalpon;
-			this.config.muertes=this.$store.getters.settings.muertes;
-			this.config.produccion=this.$store.getters.settings.produccion;
-			this.config.moneda=this.$store.getters.settings.moneda;
-			this.config.umalimentos=this.$store.getters.settings.umalimentos;
-			this.imagen=this.$store.getters.settings.imagen;
-			
+			this.config.url_router=this.$store.getters.configuraciones.url_router;
+			this.config.pass_router=this.$store.getters.configuraciones.pass_router;
+			this.config.costo_hora=this.$store.getters.configuraciones.costo_hora;
+			this.config.modo_oscuro=this.$store.getters.configuraciones.modo_oscuro;
 		},
 		methods:
 		{
-			img({result,dataUrl})
-			{
-				this.config.imagen=result;
-			},
+		
 			editar()
 			{
-				const data = new FormData();
-				for(let key in this.config)
-				{
-					data.append(key,this.config[key]);
-				}
-				const config = 
-				{
-				   headers: {
-				      'content-type': 'multipart/form-data'
-				   }
-				};
-				axios.post('/api/settings',data,config).
+				
+				axios.put('/api/configuraciones',this.config).
 				then((request)=>
 				{
-					if(request.data.editado)
+					if(request.data.ok)
 					{
-						//this.$store.store.dispatch('LoggedIn');
-						swal(
-                        {
-                            title: "Listo!",
-                            text: "Usted a actualizado su informacion ",
-                            type: "success",
-
-                        },
-                        ()=>{});
-                        this.$store.dispatch('fetch');
+						Swal.fire('Listo!', '', 'success')
+						this.$store.dispatch('fetchConfiguraciones')
+					
 					}else
 					{
-						this.errores=request.data.error;
+						
+						AxiosCatch(request.data.error)
 					}
 				}).catch(AxiosCatch);
 			}

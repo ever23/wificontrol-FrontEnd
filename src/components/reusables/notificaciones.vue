@@ -58,7 +58,7 @@ export default {
         subscription()
         this.cargarNotificaciones()
         this.sockets.subscribe('notificacion', (data) => {
-            notify(data.message, 'info')
+            notify({title: data.message,icon: 'info'})
             this.cargarNotificaciones()
         });
 

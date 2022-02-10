@@ -26,8 +26,8 @@
                                     <tr>
                                         <th class="sorting ">Id</th>
                                         <th  class="sorting ">Nombre</th>
-                                        <th  class="sorting ">Activos</th>
-                                        <th class="sorting ">conecciones</th>
+                                        <th  class="sorting d-none d-md-none d-lg-table-cell">Activos</th>
+                                        <th class="sorting d-none d-md-none d-lg-table-cell">conecciones</th>
                                         <th  class="sorting ">deuda</th>
                                         <th class="sorting "></th>
                                     </tr>

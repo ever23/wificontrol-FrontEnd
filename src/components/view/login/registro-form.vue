@@ -80,15 +80,9 @@ export default {
                     this.$store.commit('loading', false);
                     if (request.data.ok) {
                         
-                        /*swal({
-                                title: "Listo!",
-                                text: "El portfolio se ha almacenado ",
-                                type: "success",
-
-                            },
-                            () => this.$router.push({
-                                name: 'usuarios'
-                            }));*/
+                         Swal.fire('Guardado!', '', 'success').then(e=>{
+                               this.$emit("registro");
+                         })
 
                     } else {
                         this.errores = request.data.error;

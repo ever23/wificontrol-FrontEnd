@@ -320,7 +320,7 @@ export default {
                 }).toFormat("HH:mm");
             }
 
-            equipo.costo = horaFloat * 3
+            equipo.costo = horaFloat *  this.$store.getters.configuraciones.costo_hora
             equipo.apertura = apertura
             return equipo
 

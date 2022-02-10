@@ -1,14 +1,12 @@
 <template>
 <tr v-if="!eliminado">
-    <td>{{ equipo.nombre }}</td>
-    <td>
-        <div @click="activarFormTiempo">{{ tiempoEquipo }}</div>
-        <div v-if="formTiempo">
-            <input type="range" v-model="tiempoFloat" class="custom-range" @input="calcularTiempo" @change="actualizarTiempo" step="0.5" max="5" min="0">
-        </div>
+    <td @click="go">{{ equipo.nombre }}</td>
+    <td  @click="go">
+        <div >{{ tiempoEquipo }}</div>
+        
     </td>
-    <td>{{ equipo.costo }}</td>
-    <td @click="activarFormPago">
+    <td @click="go">{{ equipo.costo }}</td>
+    <td @click="activarFormPago" class="d-none d-md-none d-lg-table-cell">
         <div v-if="!formPago">{{ equipo.tPago }}</div>
         <div v-if="formPago">
             <select class="form-control" v-model="equipo.tPago">
@@ -17,16 +15,16 @@
             </select>
         </div>
     </td>
-    <td @click="activarFormPago">
+    <td @click="activarFormPago" class="d-none d-md-none d-lg-table-cell">
         <div v-if="!formPago">{{ equipo.referencia }}</div>
         <div v-if="formPago">
             <input type="text" class="form-control" v-model="equipo.referencia">
         </div>
     </td>
     
-    <td>{{ equipo.apertura }}</td>
-    <td>{{ equipo.cierre }}</td>
-    <td>
+    <td class="d-none d-md-none d-lg-table-cell">{{ equipo.apertura }}</td>
+    <td class="d-none d-md-none d-lg-table-cell">{{ equipo.cierre }}</td>
+    <td class="d-none d-md-none d-lg-table-cell">
         {{ equipo.fecha }}
     </td>
     <td >
@@ -52,6 +50,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+td {
+    cursor: pointer;
+}
 </style>

@@ -1,14 +1,14 @@
 <template>
 <tr v-if="!eliminado">
-    <td>{{ equipo.nombre }}</td>
-    <td>
+    <td @click="go" >{{ equipo.nombre }}</td>
+    <td >
         <div @click="activarFormTiempo">{{ tiempoEquipo }}</div>
         <div v-if="formTiempo">
             <input type="range" v-model="tiempoFloat" class="custom-range" @input="calcularTiempo" @change="actualizarTiempo" step="0.5" max="5" min="0">
         </div>
     </td>
-    <td>{{ equipo.costo }}</td>
-    <td @click="activarFormPago">
+    <td @click="go"  >{{ equipo.costo }}</td>
+    <td @click="activarFormPago" class="d-none d-md-none d-lg-table-cell">
         <div v-if="!formPago">{{ equipo.tPago }}</div>
         <div v-if="formPago">
             <select class="form-control" v-model="equipo.tPago">
@@ -17,16 +17,16 @@
             </select>
         </div>
     </td>
-    <td @click="activarFormPago">
+    <td @click="activarFormPago" class="d-none d-md-none d-lg-table-cell">
         <div v-if="!formPago">{{ equipo.referencia }}</div>
         <div v-if="formPago">
             <input type="text" class="form-control" v-model="equipo.referencia">
         </div>
     </td>
 
-    <td>{{ equipo.apertura }}</td>
-    <td>{{ equipo.cierre }}</td>
-    <td>
+    <td class="d-none d-md-none d-lg-table-cell">{{ equipo.apertura }}</td>
+    <td class="d-none d-md-none d-lg-table-cell">{{ equipo.cierre }}</td>
+    <td class="d-none d-md-none d-lg-table-cell">
         <i class="fa fa-check-circle" v-if="!equipo.activo"></i>
         <div class="progress progress-sm active" v-else>
             <div class="progress-bar bg-success progress-bar-striped" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" :style="'width: '+progress+'%'">
@@ -115,6 +115,14 @@ export default {
         }
     },
     methods: {
+        go() {
+            this.$router.push({
+                name: 'item-equipo',
+                query: {
+                    id_equipo: this.equipo.id_equipo
+                }
+            })
+        },
         puntoYa() {
             payWithPuntoYa(this.equipo.costo, response => {
                 if (response.ok) {
@@ -163,7 +171,7 @@ export default {
                         activo: false
 
                     }
-this.$store.commit('loading', true);
+                    this.$store.commit('loading', true);
                     axios.put('/api/equipos/cerrar', {
                         id_equipo: this.equipo.id_equipo
                     }).then(d => {
@@ -181,10 +189,10 @@ this.$store.commit('loading', true);
                         this.$emit("update", this.equipo);
                         Swal.fire('Actualizado!', '', 'success')
                         this.$socket.emit('bloquear', this.equipo.mac)
-                    }).catch(e=>{
+                    }).catch(e => {
                         AxiosCatch(e)
                         this.$store.commit('loading', false);
-                        })
+                    })
 
                 } else {
 
@@ -409,7 +417,7 @@ this.$store.commit('loading', true);
                 }).toFormat("HH:mm");
             }
 
-            equipo.costo = horaFloat * 3
+            equipo.costo = horaFloat * this.$store.getters.configuraciones.costo_hora
             equipo.apertura = apertura
             return equipo
 
@@ -446,6 +454,8 @@ this.$store.commit('loading', true);
 }
 </script>
 
-<style>
-
+<style scoped>
+td {
+    cursor: pointer;
+}
 </style>

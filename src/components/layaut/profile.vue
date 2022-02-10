@@ -1,41 +1,33 @@
 <template>
-	<main class="app-content">
-		<app-title title="Perfil" icon="user"></app-title>
+	<main class="wrapper">
+		<app-title title="Configuracion" icon="cog"></app-title>
 		 
       <div class="row user">
        
         <div class="col-md-3">
           <div class="tile p-0">
             <ul class="nav flex-column nav-tabs user-tabs">
+             
               <li class="nav-item">
-              	<router-link :class="['nav-link',active.perfil]" :to="{name:'perfil'}" >
-              		Perrfil
-              	</router-link>              	
-              </li>
-              <li class="nav-item" v-if="User.permisos=='root'">
               	<router-link :class="['nav-link',active.settings]" :to="{name:'settings'}" >
               		Configuracion
               	</router-link>    
               </li>
-               <li class="nav-item" v-if="User.permisos=='root'">
+               <li class="nav-item" >
                 <router-link :class="['nav-link',active.usuarios]" :to="{name:'usuarios'}" >
                   Usuarios
                 </router-link>     
               </li>
-              <li class="nav-item" v-if="User.permisos=='root'">
-                <router-link :class="['nav-link',active.sessiones]" :to="{name:'sessiones'}" >
-                  Sesiones
-                </router-link>     
-              </li>
+              
             </ul>
           </div>
         </div>
-        <div class="col-md-9">
-          <div class="tab-content">
-          	<div class="tile">
+        <div class="col-md-8">
+        
+          	<section class="content">
           		 <router-view ></router-view>
-          	</div>
-          </div>
+          	</section>
+          
         </div>
       </div>
     

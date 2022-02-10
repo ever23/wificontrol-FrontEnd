@@ -1,5 +1,5 @@
 <template>
-<div class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<div :class="main_class">
     <div class="wrapper">
         <header-menu @sidebar="sidebar" :timeOnline="time_online"></header-menu>
         <div class="app-sidebar__overlay" @click.prevent="sidebar"></div>
@@ -28,7 +28,17 @@ export default {
             interval:null
         }
     },
+  computed: {
 
+        main_class() {
+            if (this.$store.getters.configuraciones.modo_oscuro) {
+                return 'hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed';
+            } else {
+                return 'hold-transition  sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed';
+            }
+
+        }
+    },
     methods: {
         sidebar() {
             this.sidebar_toggle = this.sidebar_toggle == '' ? 'sidenav-toggled' : '';

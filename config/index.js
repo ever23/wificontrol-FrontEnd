@@ -3,8 +3,8 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
-const BuildPath = path.resolve(__dirname, '../../server/public/');
-//const BuildPath = path.resolve( 'C:/wificontrol/public/');
+//const BuildPath = path.resolve(__dirname, '../../server/public/');
+const BuildPath = path.resolve( 'C:/wificontrol/public/');
 const BuildIndex = path.resolve(BuildPath, 'index.html')
 const assetsPublicPath = '/';
 

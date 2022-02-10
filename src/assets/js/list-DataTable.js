@@ -15,8 +15,7 @@ export default
     {
         DataTable()
         {
-           if(this.$refs.items)
-           $(this.$refs.tabla).DataTable();
+           
         }
     }
 }

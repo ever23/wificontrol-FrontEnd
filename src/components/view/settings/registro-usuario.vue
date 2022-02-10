@@ -69,13 +69,8 @@ export default {
         ValidForm() {
 
             if (this.user.pass2 != this.user.pass1) {
-
-                swal({
-                    title: "Error!",
-                    text: "Las contraseñas no coinciden ",
-                    type: "warning",
-
-                });
+                Swal.fire('Las contraseñas no coinciden !', '', 'error')
+               
                 this.user.pass1 = '';
                 this.user.pass2 = '';
                 return false;
@@ -83,25 +78,20 @@ export default {
             return true;
         },
         Enviar() {
-           /* if (!this.ValidForm())
-                return;*/
+            if (!this.ValidForm())
+                return;
 			
             this.$store.commit('loading', true);
             axios.post('/api/user/registro', this.user)
                 .then(request => {
                     this.$store.commit('loading', false);
                     if (request.data.ok) {
-                        
-                        /*swal({
-                                title: "Listo!",
-                                text: "El portfolio se ha almacenado ",
-                                type: "success",
-
-                            },
-                            () => this.$router.push({
+                         Swal.fire('Guardado!', '', 'success').then(e=>{
+                            this.$router.push({
                                 name: 'usuarios'
-                            }));*/
-
+                            })
+                         })
+                       
                     } else {
                         this.errores = request.data.error;
                     }

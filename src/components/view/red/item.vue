@@ -1,8 +1,8 @@
 <template>
-<tr>
+<tr >
     <td>{{ item.nombre }}</td>
-    <td>{{ item.ip }}</td>
-    <td>{{ item.mac }}</td>
+    <td class="d-none d-md-none d-lg-table-cell">{{ item.ip }}</td>
+    <td class="d-none d-md-none d-lg-table-cell">{{ item.mac }}</td>
     <td>{{ subida }}</td>
     <td>{{ bajada }}</td>
     <td>

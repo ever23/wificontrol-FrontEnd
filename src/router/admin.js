@@ -3,12 +3,14 @@ import admin from '@/components/layaut/main-layaut.vue'
 import inicio from '@/components/view/inicio/inicio.vue'
 //equipos
 import equipos from '@/components/view/equipos/equipos.vue'
+import registro_equipos from '@/components/view/equipos/registro-movil.vue'
+import item_movil from '@/components/view/equipos/item-equipo-movil.vue'
 //import registoEquipo from '@/components/view/equipos/registro.vue'
 //clientes
 import clientes from '@/components/view/clientes/clientes.vue'
 
 //clientes
-import Red from '@/components/view/red/red.vue'
+
 import Invitados from '@/components/view/red/invitados.vue'
 import Privados from '@/components/view/red/privados.vue'
 
@@ -39,7 +41,20 @@ export default
     [
         //{ path: '/',name:'registro', component: registoEquipo },
         { path: '/',name:'inicio', component: inicio },
-        { path: 'equipos',name:'equipos', component: equipos },
+        {
+            path: 'equipos',
+            component: defaultLayaut ,
+            children:[
+                { path: '/', name: 'equipos',component:equipos},
+                { path: 'registro', name: 'registro',component:registro_equipos},
+                { 
+                    path: 'item', 
+                    name: 'item-equipo',
+                    component:item_movil,
+                    props: route =>{return { id_equipo: route.query.id_equipo }}
+                }
+            ]
+        },
         { path: 'clientes',name:'clientes', component: clientes },
         {
             path: 'Red',

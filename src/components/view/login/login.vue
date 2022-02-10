@@ -3,7 +3,7 @@
 <div class="card card-outline card-primary">
     
     <login-form v-if="!formRegistro"></login-form>
-    <registro-form v-if="formRegistro"></registro-form>
+    <registro-form v-if="formRegistro" @registro="registro"></registro-form>
     
 </div>
 <!-- /.card -->
@@ -41,6 +41,9 @@ export default {
        
     },
     methods: {
+        registro(){
+              this.formRegistro=false
+        }
         
     }
 }

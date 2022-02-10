@@ -28,11 +28,11 @@
                                             <th>Nombre</th>
                                             <th>tiempo</th>
                                             <th>Costo</th>
-                                            <th>Tipo de pago</th>
-                                            <th>Referencia</th>
-                                            <th>Apertura</th>
-                                            <th>Cierre</th>
-                                            <th>Fecha</th>
+                                            <th class="d-none d-md-none d-lg-table-cell">Tipo de pago</th>
+                                            <th class="d-none d-md-none d-lg-table-cell">Referencia</th>
+                                            <th class="d-none d-md-none d-lg-table-cell">Apertura</th>
+                                            <th class="d-none d-md-none d-lg-table-cell">Cierre</th>
+                                            <th class="d-none d-md-none d-lg-table-cell">Fecha</th>
                                             <th></th>
                                         </tr>
                                     </thead>

@@ -13,24 +13,24 @@ window.AxiosCatch=function(data)
 				if(data.response)
 				{
 					//console.log(data.response)
-					notify({title: "Http Status "+data.response.status+":",message: data.response.data?data.response.data.error:statusText,icon: 'fa fa-warning'},{type: "danger"});
+					notify({title: "Http Status "+data.response.status+": "+data.response.data?data.response.data.error:statusText,icon: 'error'},{type: "error"});
 		
 				}else
 				{
-					notify({title: "",message: data,icon: 'warning'},{type: "danger"});
+					notify({title: data,icon: 'error'},{type: "error"});
 				}
 			}else
 			{
 				for(let i in data)
 				{
 					//console.log(i,data[i]);
-					notify({title: "Error: ",message: data[i],icon: 'warning'},{type: "danger"});
+					notify({title: "Error: "+data[i],icon: 'error'},{type: "error"});
 				}
 			}
 			
 		}else
 		{
-			notify({title: "Error: ",message: data,icon: 'warning'},{type: "danger"});
+			notify({title: "Error: "+data,icon: 'error'},{type: "error"});
 		}
 		
 	}

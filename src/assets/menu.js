@@ -1,17 +1,17 @@
 export default [
       {
-        "expanded":"",
+        "expanded":false,
         "title":"Inicio",
         "to":"inicio",
-        "icon":"fa-line-chart"
+        "icon":"fa-home"
       },
       {
         "expanded":"",
         "title":"Alquiler",
-        "icon":"fa-wifi",
+        "icon":"fa-funnel-dollar",
         "menu":[
         
-          {"to":"clientes","name":"clientes",icon:"fa-mobile"},
+          {"to":"clientes","name":"clientes",icon:"fa-users"},
           {"to":"equipos","name":"Resumen",icon:"fa-list-alt"},
         ]
       },
@@ -21,8 +21,8 @@ export default [
         "icon":"fa-wifi",
         "menu":[
         
-          {"to":"invitados","name":"Invitados",icon:"fa-mobile"},
-          {"to":"privados","name":"Interna",icon:"fa-list-alt"},
+          {"to":"invitados","name":"Invitados",icon:"fa-funnel-dollar"},
+          {"to":"privados","name":"Interna",icon:"fa-key"},
         ]
       }/*,
 

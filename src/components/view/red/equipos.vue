@@ -9,15 +9,15 @@
             <thead>
                 <tr>
                     <th>Nombre</th>
-                    <th>IP</th>
-                    <th>MAC</th>
+                    <th class ="d-none d-md-none d-lg-table-cell">IP</th>
+                    <th class="d-none d-md-none d-lg-table-cell">MAC</th>
                     <th>Subida</th>
                     <th>Bajada</th>
                     <th style="width: 40px"></th>
                 </tr>
             </thead>
             <tbody>
-                <wifi-item v-for="item in wifi" :item="item" :key="item.ip"></wifi-item>
+                <wifi-item v-for="item in wifi" :item="item" :key="item.mac"></wifi-item>
                  <tr v-if="!conexionRouter">
                     <th colspan="6">Conectando con el router.....</th>
                     

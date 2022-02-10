@@ -15,6 +15,7 @@ export default {
         }
     },
     created() {
+        this.$store.dispatch('fetchConfiguraciones')
         this.sockets.subscribe('error-conexion', () => {
              Swal.fire({
                 title: 'Error en conexion con el servidor',
