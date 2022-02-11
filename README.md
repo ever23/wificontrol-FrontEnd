@@ -6,7 +6,7 @@
 ![login](./screenshot/login.png)
 ![inicio](./screenshot/inicio.jpg)
 ![inicio](./screenshot/inicio2.jpg)
-![inicio](./screenshot/alquiler1.jpg)
+![inicio](./screenshot/alquiler.jpg)
 ![inicio](./screenshot/movil1.jpg)
 ![inicio](./screenshot/movil2.jpg)
 ![inicio](./screenshot/movil3.jpg)
