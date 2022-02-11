@@ -105,12 +105,7 @@ export default {
             type: Object,
             required: false
         },
-        costoHora: {
-            type: Number,
-            required: false
-        },
         id_equipo: {
-            type: Number,
             required: true
         }
     },
@@ -139,7 +134,7 @@ export default {
 
                 this.intervalIndefinido = setInterval(() => {
                     this.tiempoIndefinido = this.tiempoActivo()
-                    this.equipo.costo = (this.horaFloat(this.tiempoIndefinido) * this.costoHora).toLocaleString('en')
+                    this.equipo.costo = (this.horaFloat(this.tiempoIndefinido) * this.$store.getters.configuraciones.costo_hora).toLocaleString('en')
                 }, 1000)
             }
         }).catch(AxiosCatch)

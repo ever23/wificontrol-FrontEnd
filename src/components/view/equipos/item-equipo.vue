@@ -2,11 +2,19 @@
 <tr v-if="!eliminado">
     <td @click="go" >{{ equipo.nombre }}</td>
     <td >
+     <div class="d-block d-md-block d-lg-none"  v-if="!formTiempo">
+        <div class="progress progress-sm active" v-if="equipo.activo">
+            <div class="progress-bar bg-success progress-bar-striped" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" :style="'width: '+progress+'%'">
+
+            </div>
+        </div>
+    </div>
         <div @click="activarFormTiempo">{{ tiempoEquipo }}</div>
         <div v-if="formTiempo">
             <input type="range" v-model="tiempoFloat" class="custom-range" @input="calcularTiempo" @change="actualizarTiempo" step="0.5" max="5" min="0">
         </div>
-    </td>
+
+    </td> 
     <td @click="go"  >{{ equipo.costo }}</td>
     <td @click="activarFormPago" class="d-none d-md-none d-lg-table-cell">
         <div v-if="!formPago">{{ equipo.tPago }}</div>
@@ -58,10 +66,6 @@ export default {
         item: {
             type: Object,
             required: true
-        },
-        costoHora: {
-            type: Number,
-            required: true
         }
     },
     data() {
@@ -80,7 +84,10 @@ export default {
         }
     },
     created() {
+        if(this.item==undefined)
+        return 
         this.equipo = this.item;
+        console.log('cres')
         if (this.equipo.cierre !== "Indefinido") {
 
             this.progress = this.calcularProgreso(this.equipo.tiempo, this.equipo.cierre)
@@ -92,7 +99,7 @@ export default {
 
             this.intervalIndefinido = setInterval(() => {
                 this.tiempoIndefinido = this.tiempoActivo()
-                this.equipo.costo = (this.horaFloat(this.tiempoIndefinido) * this.costoHora).toLocaleString('en')
+                this.equipo.costo = (this.horaFloat(this.tiempoIndefinido) *  this.$store.getters.configuraciones.costo_hora).toLocaleString('en')
             }, 1000)
         }
         this.sockets.subscribe("/equipo/update/" + this.equipo.id_equipo, (data) => {

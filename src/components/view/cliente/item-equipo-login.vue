@@ -3,42 +3,61 @@
 <div class="card card-outline card-primary">
     <div class="card-header text-center">
         <h1><b> {{ equipo.nombre }}</b></h1>
+        <i class="fa fa-check-circle" v-if="!equipo.activo"></i>
+        <div class="progress progress-sm active" v-else>
+            <div class="progress-bar bg-success progress-bar-striped" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" :style="'width: '+progress+'%'">
+            </div>
+        </div>
     </div>
     <div class="card-body">
-        <formulario>
-            <div class="input-group mb-3 justify-content-center">
-                <div class="form-group ">
-                    <h3>{{ tiempoEquipo }}</h3>
-                </div>
-            </div>
-            <i class="fa fa-check-circle" v-if="!equipo.activo"></i>
-            <div class="progress progress-sm active" v-else>
-                <div class="progress-bar bg-success progress-bar-striped" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" :style="'width: '+progress+'%'">
-                </div>
-            </div>
-            <div class="input-group mb-3 row">
+        <div class="card ">
+            <table class="table">
+                <thead class="thead">
+                    <tr>
+                        <th>tiempo</th>
+                        <th>Costo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>
+                            <div>{{ tiempoEquipo }}</div>
 
-                <div class="form-group  col-md-4">
-                    {{ equipo.tPago }}
+                        </th>
+                        <th>{{ equipo.costo }}</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+      
+        <div class="card">
+            <table class="table">
+                <thead class="thead">
+                    <tr>
+                        <th>Apertura</th>
+                        <th>Cierre</th>
 
-                </div>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td c>{{ equipo.apertura }}</td>
+                        <td>{{ equipo.cierre }}</td>
 
-                <div class="  col-md-4"> {{ equipo.referencia }}</div>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card btn-group">
 
-                <h5 class=" col-md-4">{{ equipo.costo }} Bs</h5>
+            <button type="submit" class="btn btn-danger btn-md" v-if="equipo.cierre=='Indefinido'" @click="cerrar">
+                <b> Cerrar </b>
+            </button>
+            <button type="submit" class="btn btn-primary btn-md" @click="pagomovil">
+                <b> Pagomovil</b>
+            </button>
 
-            </div>
-            <div class="btn-group">
-
-                <button type="submit" class="btn btn-danger btn-md" v-if="equipo.cierre=='Indefinido'" @click="cerrar">
-                    <b> Cerrar </b>
-                </button>
-                <button type="submit" class="btn btn-primary btn-md" @click="pagomovil">
-                    <b> Pagomovil</b>
-                </button>
-
-            </div>
-        </formulario>
+        </div>
     </div>
 
     <!-- /.card-body -->

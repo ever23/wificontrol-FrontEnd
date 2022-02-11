@@ -207,7 +207,7 @@ export default {
     data() {
         return {
             costoHora: 3,
-            equipos: Array,
+            equipos: [],
             time: 0,
             formActive: false,
             estadisticas: {},

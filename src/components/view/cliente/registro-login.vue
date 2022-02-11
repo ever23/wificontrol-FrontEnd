@@ -11,73 +11,70 @@
                 <div v-if="newEquipo.cliente!=undefined" @click="newEquipo.cliente=undefined"> {{newEquipo.nombre}}</div><br>
                 <autocomplete v-if="newEquipo.cliente==undefined" :initValue="newEquipo.nombre" :url="api" :onShouldGetData="bucarCliente" anchor="nombre" label="writer" :classes="{ wrapper: 'form-wrapper ', input: 'form-control', list: 'data-list', item: 'data-list-item' }" :on-select="getData" :onInput="d=>newEquipo.nombre=d">
                 </autocomplete>
-                </div>
-                 <div class="input-group mb-3"  v-if="equiposPendientes.length>1">
-               <div class="btn-group form-group"  >
- <select class="form-control" @change="selectIp">
-                    <option> </option>
-                    <option v-if="equiposPendientes.lenth==0" selected>Cargando..</option>
-                    <option v-for="(item,id) in equiposPendientes" :value="item.mac"> IP {{ item.ip }} {{ item.nombre }}</option>
+            </div>
+            <div class="input-group mb-3" v-if="equiposPendientes.length>1">
+                <div class="btn-group form-group">
+                    <select class="form-control" @change="selectIp">
+                        <option> </option>
+                        <option v-if="equiposPendientes.lenth==0" selected>Cargando..</option>
+                        <option v-for="(item,id) in equiposPendientes" :value="item.mac"> IP {{ item.ip }} {{ item.nombre }}</option>
 
-                </select>
-                 <button class=" btn btn-primary btn-sm float-right" type="button"  @click="cargarWifi"><i class="fa fa-redo-alt"></i></button>
+                    </select>
+                    <button class=" btn btn-primary btn-sm float-right" type="button" @click="cargarWifi"><i class="fa fa-redo-alt"></i></button>
 
                 </div>
             </div>
-            <div class="input-group mb-3"  v-if="equiposPendientes.length==1">
-          
-                IP {{ newEquipo.ip }}, Mac {{ newEquipo.mac }} <button    class=" btn btn-primary btn-sm float-right" type="button"  @click="cargarWifi"><i class="fa fa-redo-alt"></i></button>
+            <div class="input-group mb-3" v-if="equiposPendientes.length==1">
 
-               
+                IP {{ newEquipo.ip }}, Mac {{ newEquipo.mac }} <button class=" btn btn-primary btn-sm float-right" type="button" @click="cargarWifi"><i class="fa fa-redo-alt"></i></button>
 
-                   
+            </div>
+            <div class="input-group mb-3">
+                <div class="form-group form-control" v-if="! newEquipo.libre">
+                    <input type="range" class="custom-range" v-model="newEquipo.rangoTiempo" step="0.5" max="5">
                 </div>
-                <div class="input-group mb-3">
-                    <div class="form-group form-control" v-if="! newEquipo.libre">
-                        <input type="range" class="custom-range" v-model="newEquipo.rangoTiempo" step="0.5" max="5">
+
+            </div>
+            <div class="input-group mb-3 row">
+
+                <div class="form-group  col-md-4">
+                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                        <input type="checkbox" class="custom-control-input" id="customSwitch3" v-model=" newEquipo.libre">
+                        <label class="custom-control-label" for="customSwitch3"></label>
                     </div>
 
                 </div>
-                <div class="input-group mb-3 row">
 
-                    <div class="form-group  col-md-4">
-                        <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                            <input type="checkbox" class="custom-control-input" id="customSwitch3" v-model=" newEquipo.libre">
-                            <label class="custom-control-label" for="customSwitch3"></label>
-                        </div>
+                <div v-if="!newEquipo.libre" class="  col-md-4"> {{ computedTiempo }}</div>
 
-                    </div>
+                <div class=" col-md-4"> {{ newEquipo.costo }} Bs</div>
 
-                    <div v-if="!newEquipo.libre" class="  col-md-4"> {{ computedTiempo }}</div>
+            </div>
 
-                    <div class=" col-md-4"> {{ newEquipo.costo }} Bs</div>
+            <div class="input-group mb-3">
+                <select class="form-control" v-model="newEquipo.tPago">
+                    <option>Pagomovil</option>
+                    <option>Efectivo</option>
+                </select>
 
+            </div>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" v-model="newEquipo.referencia">
+
+            </div>
+            <div class="input-group mb-3">
+                Apertura: {{ newEquipo.apertura }}<br>
+                Clierre: {{ newEquipo.cierre }}
+
+            </div>
+            <div class="row">
+
+                <!-- /.col -->
+                <div class="col-4">
+                    <button type="submit" class="btn btn-primary btn-block">Guardar</button>
                 </div>
-
-                <div class="input-group mb-3">
-                    <select class="form-control" v-model="newEquipo.tPago">
-                        <option>Pagomovil</option>
-                        <option>Efectivo</option>
-                    </select>
-
-                </div>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" v-model="newEquipo.referencia">
-
-                </div>
-                <div class="input-group mb-3">
-                    Apertura: {{ newEquipo.apertura }}<br>
-                    Clierre: {{ newEquipo.cierre }}
-
-                </div>
-                <div class="row">
-
-                    <!-- /.col -->
-                    <div class="col-4">
-                        <button type="submit" class="btn btn-primary btn-block">Guardar</button>
-                    </div>
-                    <!-- /.col -->
-                </div>
+                <!-- /.col -->
+            </div>
         </formulario>
 
     </div>
@@ -97,42 +94,15 @@ import {
     DateTime
 } from 'luxon'
 import Autocomplete from 'vue2-autocomplete-js';
+import registro from '../equipos/registro.vue'
 export default {
 
-    components: {
-        Autocomplete
-    },
+    mixins: [registro],
     name: 'registro-equipo-login',
-    data() {
-        return {
-            costoHora: 3,
-            api: '',
-            newEquipo: {
-                libre: false,
-                cliente: null,
-                nombre: "",
-                tiempo: "Indefinido",
-                costo: "",
-                tPago: "",
-                referencia: "",
-                apertura: "",
-                cierre: "Indefinido",
-                rangoTiempo: 0,
-                ip: "",
-                mac: ""
-            },
-            time: 0,
-            equipo: {},
-            wifi: [],
-            equiposPendientes: []
-        }
-    },
 
     mounted() {
         this.costoHora = this.$store.getters.configuraciones.costo_hora
         this.cargarWifi()
-
-        //this.$('.select2').select2()
     },
     watch: {
         // cada vez que equipo cambie, esta función será ejecutada
@@ -142,19 +112,9 @@ export default {
     },
     computed: {
 
-        computedTiempo() {
-            let time = DateTime.fromFormat('00:00', 'HH:mm')
-
-            this.newEquipo.tiempo = time.plus({
-                minutes: this.newEquipo.rangoTiempo * 60
-            }).toFormat("HH:mm")
-
-            this.newEquipo = this.tiempo(this.newEquipo)
-            return this.newEquipo.tiempo
-        }
     },
     methods: {
-    
+
         cargarWifi() {
             this.$store.commit('loading', true)
             this.api = axios.defaults.baseURL + '/api/clientes/busqueda'
@@ -177,7 +137,7 @@ export default {
                 this.$store.commit('loading', true)
                 axios.get('/api/equipos/activos').then(data => {
                     this.equipos = data.data;
-                    this.equiposPendientes=[]
+                    this.equiposPendientes = []
                     this.sockets.subscribe('equipos', (data) => {
                         this.wifi = data
                         this.$store.commit('loading', false)
@@ -205,102 +165,11 @@ export default {
         },
 
         selectIp(e) {
-          
-            let equipo = this.equiposPendientes.find(eq=>eq.mac== e.target.value)
+
+            let equipo = this.equiposPendientes.find(eq => eq.mac == e.target.value)
             this.newEquipo.ip = equipo.ip
             this.newEquipo.mac = e.target.value
-        },
-        actualizar(data) {
-            this.equipo = data
-
-        },
-        bucarCliente(q) {
-            return new Promise((resolve, reject) => {
-                axios.get(this.api + '?q=' + q).then(d => {
-
-                    resolve(d.data)
-
-                }).catch(reject)
-            })
-        },
-        getData(obj) {
-            console.log(obj)
-            this.newEquipo.id_cliente = obj.id_cliente
-            this.newEquipo.nombre = obj.nombre
-        },
-        calcularTiempo(e) {
-
-            let time = DateTime.fromFormat('00:00', 'HH:mm')
-            this.equipos[e.target.id].tiempo = time.plus({
-                minutes: e.target.value * 60
-            }).toFormat("HH:mm")
-
-            this.equipos[e.target.id] = this.tiempo(this.equipos[e.target.id], this.equipos[e.target.id].apertura)
-
-        },
-        guardar() {
-            this.$store.commit('loading', true);
-            if (this.newEquipo.libre) {
-                this.newEquipo.tiempo = 'Indefinido'
-                this.newEquipo.cierre = 'Indefinido'
-            }
-            delete this.newEquipo.libre
-            axios.post('/api/equipos', this.newEquipo).
-            then((data) => {
-                this.$emit('registro', data.data.data)
-                let equipo = data.data.data
-                Swal.fire('Equipo agregado!', '', 'success')
-                this.newEquipo = {
-                    nombre: "",
-                    tiempo: "Indefinido",
-                    costo: "",
-                    tPago: "",
-                    referencia: "",
-                    apertura: "",
-                    cierre: "Indefinido",
-                    rangoTiempo: 0
-                }
-                this.$socket.emit('renombrar', {
-                    MAC: equipo.mac,
-                    nombre: equipo.nombre
-                })
-                this.actualizar(equipo)
-                this.$store.commit('loading', false);
-            }).catch(e => {
-                AxiosCatch(e)
-                this.$store.commit('loading', false);
-            });
-        },
-        tiempo(equipo, hora = null) {
-            let time;
-            if (hora == null) {
-                time = DateTime.now()
-            } else {
-                time = DateTime.fromFormat(hora, 'HH:mm')
-            }
-
-            let tiempoSplit = [],
-                horaFloat = 0,
-                apertura = time.toFormat("HH:mm");
-            if (equipo.tiempo == "Indefinido") {
-                tiempoSplit = ['00', '00']
-                equipo.cierre = "Indefinido"
-            } else {
-                tiempoSplit = equipo.tiempo.split(":")
-                horaFloat = Number(tiempoSplit[0]) + (Number(tiempoSplit[1]) / 60)
-                // let cierre = new Date(time.getTime() + (horaFloat * 3600000))
-                equipo.cierre = time.plus({
-                    hours: tiempoSplit[0],
-                    minutes: tiempoSplit[1]
-                }).toFormat("HH:mm");
-            }
-
-            equipo.costo = horaFloat * this.costoHora
-            equipo.apertura = apertura
-            return equipo
-
         }
-
     }
 }
 </script>
