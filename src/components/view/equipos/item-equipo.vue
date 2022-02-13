@@ -1,21 +1,21 @@
 <template>
 <tr v-if="!eliminado">
-    <td @click="go" >{{ equipo.nombre }}</td>
-    <td >
-     <div class="d-block d-md-block d-lg-none"  v-if="!formTiempo">
-        <div class="progress progress-sm active" v-if="equipo.activo">
-            <div class="progress-bar bg-success progress-bar-striped" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" :style="'width: '+progress+'%'">
+    <td @click="go">{{ equipo.nombre }}</td>
+    <td>
+        <div v-if="!formTiempo && equipo.cierre!='Indefinido'">
+            <div class="progress progress-sm active" v-if="equipo.activo">
+                <div class="progress-bar bg-success progress-bar-striped" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" :style="'width: '+progress+'%'">
 
+                </div>
             </div>
         </div>
-    </div>
         <div @click="activarFormTiempo">{{ tiempoEquipo }}</div>
         <div v-if="formTiempo">
             <input type="range" v-model="tiempoFloat" class="custom-range" @input="calcularTiempo" @change="actualizarTiempo" step="0.5" max="5" min="0">
         </div>
 
-    </td> 
-    <td @click="go"  >{{ equipo.costo }}</td>
+    </td>
+    <td @click="go">{{ equipo.costo }}</td>
     <td @click="activarFormPago" class="d-none d-md-none d-lg-table-cell">
         <div v-if="!formPago">{{ equipo.tPago }}</div>
         <div v-if="formPago">
@@ -36,10 +36,9 @@
     <td class="d-none d-md-none d-lg-table-cell">{{ equipo.cierre }}</td>
     <td class="d-none d-md-none d-lg-table-cell">
         <i class="fa fa-check-circle" v-if="!equipo.activo"></i>
-        <div class="progress progress-sm active" v-else>
-            <div class="progress-bar bg-success progress-bar-striped" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" :style="'width: '+progress+'%'">
+        <div class="" v-else>
+            <equipo-wifi :item="wifi"></equipo-wifi>
 
-            </div>
         </div>
     </td>
     <td>
@@ -60,8 +59,15 @@ import {
     DateTime
 } from 'luxon'
 import '@/assets/js/py-script.js'
+import Vue from 'vue'
+import wifi_item from './equipo-wifi.vue'
+
 export default {
     name: 'item-equipo',
+    components: {
+        'equipo-wifi': wifi_item,
+
+    },
     props: {
         item: {
             type: Object,
@@ -80,12 +86,13 @@ export default {
             eliminado: false,
             formPago: false,
             tiempoIndefinido: '',
-            intervalIndefinido: null
+            intervalIndefinido: null,
+            wifi: {}
         }
     },
     created() {
-        if(this.item==undefined)
-        return 
+        if (this.item == undefined)
+            return
         this.equipo = this.item;
         console.log('cres')
         if (this.equipo.cierre !== "Indefinido") {
@@ -99,13 +106,21 @@ export default {
 
             this.intervalIndefinido = setInterval(() => {
                 this.tiempoIndefinido = this.tiempoActivo()
-                this.equipo.costo = (this.horaFloat(this.tiempoIndefinido) *  this.$store.getters.configuraciones.costo_hora).toLocaleString('en')
+                this.equipo.costo = (this.horaFloat(this.tiempoIndefinido) * this.$store.getters.configuraciones.costo_hora).toLocaleString('en')
             }, 1000)
         }
         this.sockets.subscribe("/equipo/update/" + this.equipo.id_equipo, (data) => {
             this.equipo = data
 
         })
+        if (this.equipo.activo) {
+            this.sockets.subscribe('equipo/wifi/' + this.equipo.mac, (data) => {
+                this.wifi = data
+                if (!this.equipo.activo) {
+                    this.sockets.unsubscribe('equipo/wifi/' + this.equipo.mac);
+                }
+            })
+        }
 
     },
     computed: {

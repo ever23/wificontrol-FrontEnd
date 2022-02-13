@@ -3,8 +3,8 @@
     <td>{{ item.nombre }}</td>
     <td class="d-none d-md-none d-lg-table-cell">{{ item.ip }}</td>
     <td class="d-none d-md-none d-lg-table-cell">{{ item.mac }}</td>
-    <td>{{ subida }}</td>
-    <td>{{ bajada }}</td>
+    <td><i class="fa fa-arrow-up" ></i>{{ subida }}</td>
+    <td><i class="fa fa-arrow-down" ></i>{{ bajada }}</td>
     <td>
         <div class="btn-group">
             <button class="btn btn-primary btn-sm" type="button" v-if="item.bloqueado" @click="desbloquear"><i class="fa fa-lock"></i></button>

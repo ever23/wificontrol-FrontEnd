@@ -13,7 +13,7 @@ import axios from 'axios'
 import registroEquipo from './registro-login.vue'
 import itemEquipoLogin from './item-equipo-login.vue'
 export default {
-    name: 'cliente',
+    name: 'cliente', 
     components: {
         "registro-equipo-login":registroEquipo,
         itemEquipoLogin

@@ -35,7 +35,11 @@
     <td><input type="text" class="form-control" v-model="newEquipo.referencia"></td>
     <td class="d-none d-md-none d-lg-table-cell"> {{ newEquipo.apertura }} </td>
     <td class="d-none d-md-none d-lg-table-cell"> {{ newEquipo.cierre }}</td>
-    <th class="d-none d-md-none d-lg-table-cell"></th>
+    <th class="d-none d-md-none d-lg-table-cell">
+        <div>
+            <i class="fa fa-arrow-up"></i>{{ subida }} <i class="fa fa-arrow-down"></i>{{ bajada }}
+        </div>
+    </th>
     <td>
 
         <div class="btn-group">
@@ -67,32 +71,45 @@ export default {
         }
     },
     created() {
-         this.costoHora = this.$store.getters.configuraciones.costo_hora
-       
+        this.costoHora = this.$store.getters.configuraciones.costo_hora
+
         this.api = axios.defaults.baseURL + '/api/clientes/busqueda'
         this.wifi = this.item
         this.newEquipo.ip = this.wifi.ip
         this.newEquipo.mac = this.wifi.mac
+        this.sockets.subscribe('equipo/wifi/' + this.wifi.mac, (data) => {
+                this.wifi = data
+
+        })
         axios.get('/api/equipos/mac?mac=' + this.newEquipo.mac).then(result => {
             if (result.data.nombre !== null) {
 
                 this.newEquipo.nombre = result.data.nombre
                 this.newEquipo.id_cliente = result.data.id_cliente
                 this.formActivecliente = false
-            }else{
-                 this.newEquipo.nombre =  this.wifi.nombre
-                  this.formActivecliente = true
+            } else {
+                this.newEquipo.nombre = this.wifi.nombre
+                this.formActivecliente = true
             }
 
         }).catch(AxiosCatch)
 
         //this.$('.select2').select2()
     },
+      computed: {
+        subida(){
+            
+            return this.calcularDatos(this.wifi.up)
+        },
+        bajada(){
+            return this.calcularDatos(this.wifi.down)
+        }
+
+    },
     watch: {
         // cada vez que equipo cambie, esta función será ejecutada
         item: function (newitem, olditem) {
 
-            console.log(newitem)
             this.wifi = newitem
         }
     },

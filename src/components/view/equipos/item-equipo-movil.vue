@@ -14,12 +14,14 @@
             <table class="table">
                 <thead class="thead">
                     <tr>
+                        <th v-if="!equipo.activo">Mac</th>
                         <th>tiempo</th>
                         <th>Costo</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
+                        <th v-if="!equipo.activo">{{ equipo.mac }}</th>
                         <th>
                             <div @click="activarFormTiempo">{{ tiempoEquipo }}</div>
                             <div v-if="formTiempo">
@@ -28,6 +30,23 @@
                         </th>
                         <th>{{ equipo.costo }}</th>
                     </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card" v-if="equipo.activo">
+            <table class="table">
+                <thead class="thead">
+                    <tr>
+                        <th>Nombre</th>
+                        <th class="d-none d-md-none d-lg-table-cell">IP</th>
+                        <th class="d-none d-md-none d-lg-table-cell">MAC</th>
+                        <th>Subida</th>
+                        <th>Bajada</th>
+                        <th style="width: 40px"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <wifi-item :item="wifi"></wifi-item>
                 </tbody>
             </table>
         </div>
@@ -97,8 +116,13 @@
 <script>
 import axios from 'axios'
 import itemEquipo from './item-equipo.vue'
+import itemWifi from '../red/item.vue'
 export default {
     name: 'item-equipo-movil',
+    components: {
+        'wifi-item': itemWifi,
+
+    },
     mixins: [itemEquipo],
     props: {
         item: {
@@ -137,12 +161,19 @@ export default {
                     this.equipo.costo = (this.horaFloat(this.tiempoIndefinido) * this.$store.getters.configuraciones.costo_hora).toLocaleString('en')
                 }, 1000)
             }
+            this.sockets.subscribe("/equipo/update/" + this.equipo.id_equipo, (data) => {
+                this.equipo = data
+
+            })
+            if (this.equipo.activo) {
+                this.sockets.subscribe('equipo/wifi/' + this.equipo.mac, (data) => {
+                    this.wifi = data
+                    if (!this.equipo.activo) {
+                        this.sockets.unsubscribe('equipo/wifi/' + this.equipo.mac);
+                    }
+                })
+            }
         }).catch(AxiosCatch)
-
-        this.sockets.subscribe("/equipo/update/" + this.equipo.id_equipo, (data) => {
-            this.equipo = data
-
-        })
 
     }
 

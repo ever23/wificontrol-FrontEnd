@@ -12,9 +12,6 @@
 import axios from 'axios'
 export default {
     name: 'login-layaut',
-    components: {
-
-    },
     data() {
         return {
 

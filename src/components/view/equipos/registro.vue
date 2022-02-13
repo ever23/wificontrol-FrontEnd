@@ -3,13 +3,12 @@
 </template>
 
 <script>
-
 import axios from 'axios'
 import {
     meses
 } from '@/assets/js/Date.js'
 import filter from '@/assets/js/UserVueFilter.js'
-import ip from '@/assets/js/ip.js'
+import notify from '@/assets/js/notify.js'
 import {
     DateTime
 } from 'luxon'
@@ -54,7 +53,6 @@ export default {
     created() {
         this.costoHora = this.$store.getters.configuraciones.costo_hora
         this.api = axios.defaults.baseURL + '/api/clientes/busqueda'
-        
 
         //this.$('.select2').select2()
     },
@@ -73,7 +71,7 @@ export default {
 
     },
     methods: {
-       
+
         actualizar(data) {
             this.equipo = data
             this.$emit('registro', data)
@@ -101,17 +99,87 @@ export default {
             this.equipos[e.target.id] = this.tiempo(this.equipos[e.target.id], this.equipos[e.target.id].apertura)
 
         },
-        guardar() {
-            this.$store.commit('loading', true);
+        validar() {
+            let ok = true
+            if (this.newEquipo.tiempo == '00:00') {
+                notify({
+                    title: "No Asigno un tiempo! ",
+                    icon: 'error'
+                }, {
+                    type: "error"
+                })
+                ok = false
+            }
+
+            if (this.newEquipo.mac == '') {
+                notify({
+                    title: "Mac no valida! ",
+                    icon: 'error'
+                }, {
+                    type: "error"
+                })
+                ok = false
+            }
+
+            if (this.newEquipo.nombre == '') {
+                notify({
+                    title: "No agrego un Nombre! ",
+                    icon: 'error'
+                }, {
+                    type: "error"
+                })
+                ok = false
+            }
+
+            return ok
+
+        },
+        verificarCliente() {
+            let nombre = this.newEquipo.nombre
+            return new Promise(async (resolve, reject) => {
+                let res = await axios.get('/api/clientes/busqueda?q=' + nombre)
+                if (res.data.length >= 1) {
+                    Swal.fire({
+                        title: 'Ya existe un cliente con el nombre de ' + res.data[0].nombre,
+                        text: "Desea usarlo?",
+                        showDenyButton: true,
+                        confirmButtonText: 'si',
+                        showCancelButton: true
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            this.newEquipo.id_cliente = res.data[0].id_cliente
+                            return resolve(true)
+                        } else if (result.isDenied) {
+                            return resolve(true)
+                        }
+                        return resolve(false)
+
+                    })
+
+                } else {
+                    resolve(true)
+                }
+
+            })
+        },
+        async guardar() {
+            if (this.newEquipo.id_cliente == '' || this.newEquipo.id_cliente == null || this.newEquipo.id_cliente == undefined) {
+                if (!await this.verificarCliente())
+                    return;
+            }
+
             if (this.newEquipo.libre) {
                 this.newEquipo.tiempo = 'Indefinido'
                 this.newEquipo.cierre = 'Indefinido'
             }
+            if (!this.validar())
+                return;
             delete this.newEquipo.libre
-           
+
+            this.$store.commit('loading', true);
             axios.post('/api/equipos', this.newEquipo).
             then((data) => {
-                
+
                 let equipo = data.data.data
                 Swal.fire('Equipo agregado!', '', 'success')
                 this.newEquipo = {
@@ -123,10 +191,10 @@ export default {
                     apertura: "",
                     cierre: "Indefinido",
                     rangoTiempo: 0,
-                    ip:"",
-                    mac:""
+                    ip: "",
+                    mac: ""
                 }
-                
+
                 this.actualizar(equipo)
                 this.$store.commit('loading', false);
             }).catch(e => {

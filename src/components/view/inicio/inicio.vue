@@ -101,11 +101,11 @@
                             <th>Nombre</th>
                             <th>tiempo</th>
                             <th>Costo</th>
-                            <th  class="d-none d-md-none d-lg-table-cell">Tipo de pago</th>
-                            <th  class="d-none d-md-none d-lg-table-cell">Referencia</th>
+                            <th class="d-none d-md-none d-lg-table-cell">Tipo de pago</th>
+                            <th class="d-none d-md-none d-lg-table-cell">Referencia</th>
                             <th class="d-none d-md-none d-lg-table-cell">Apertura</th>
                             <th class="d-none d-md-none d-lg-table-cell">Cierre</th>
-                            <th class="d-none d-md-none d-lg-table-cell">Estado</th>
+                            <th class="d-none d-md-none d-lg-table-cell">Actividad</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -218,7 +218,7 @@ export default {
     created() {
 
         this.sockets.subscribe('equipos', (data) => {
-            this.wifi = data
+            this.wifi = data.filter(w=>w.online)
 
         });
         this.sockets.subscribe('/equipo/registro', (data) => {

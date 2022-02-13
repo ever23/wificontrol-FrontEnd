@@ -15,6 +15,7 @@ const Toast = Swal.mixin({
 
 export default function (info, type) {
 	setTimeout(()=>audio.play(), 0);
+
 	Toast.fire(info,type)
 	
 	//return $.notify(info,type);
