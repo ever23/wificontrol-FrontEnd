@@ -8,12 +8,12 @@
           <div class="tile p-0">
             <ul class="nav flex-column nav-tabs user-tabs">
              
-              <li class="nav-item">
+              <li class="nav-item" >
               	<router-link :class="['nav-link',active.settings]" :to="{name:'settings'}" >
               		Configuracion
               	</router-link>    
               </li>
-               <li class="nav-item" >
+               <li class="nav-item" v-if="$store.getters.IsRoot">
                 <router-link :class="['nav-link',active.usuarios]" :to="{name:'usuarios'}" >
                   Usuarios
                 </router-link>     

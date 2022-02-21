@@ -55,8 +55,10 @@ export default {
             })
             if(datos<1000){
                 return datos+" B/s"
-            }else {
+            }else if(datos < 1000000){
                 return  numberFormat.format(datos/1000)+" KB/s"
+            }else{
+                 return  numberFormat.format(datos/1000000)+" MB/s"
             }
         },
         bloquear(e) {

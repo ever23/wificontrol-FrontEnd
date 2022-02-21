@@ -6,8 +6,8 @@
         <td class="d-none d-md-none d-lg-table-cell">{{ cliente.activos }}</td>
         <td class="d-none d-md-none d-lg-table-cell">{{ cliente.conecciones }}</td>
         <td>{{ cliente.deuda }} Bs</td>
-        <td>
-            <button class="btn btn-primary btn-sm" type="button" @click="eliminar"><i class="fa fa-trash"></i></button>
+        <td> 
+            <button class="btn btn-primary btn-sm" type="button" v-if="isRoot()"  @click="eliminar"><i class="fa fa-trash"></i></button>
         </td>
     </tr>
     <tr class="expandable-body d-none">
@@ -127,6 +127,9 @@ export default {
 
     },
     methods: {
+           isRoot() {
+            return this.$store.getters.IsRoot
+        },
         pagePrevius() {
             if (this.pag > 1)
                 this.pag -= 1

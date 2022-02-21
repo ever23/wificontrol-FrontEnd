@@ -7,10 +7,10 @@ export default (to, from, next) =>
    {
        store.dispatch('user').then(data=>
         {
-          if(data.data.permisos!='root' && to.matched.some(record => record.meta.root))
+          if(!data.data.root && to.matched.some(record => record.meta.root))
           {
              return next({name: '401',params:{location:to.fullPath}});
-          }
+          } 
           if(data.data.login)
           {
              next(); 

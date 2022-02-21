@@ -79,9 +79,9 @@
     <div class="card">
         <div class="card-header border-transparent">
             <h3 class="card-title">Equipos Conectados </h3><br>
-            <span class="badge badge-warning" >Pendientes {{pendientes}}</span>
+            <span class="badge badge-warning">Pendientes {{pendientes}}</span>
             <div class="card-tools">
-                
+
                 <button type="button" class="btn btn-tool d-none d-md-none d-lg-table-cell" @click="activarFormulario">
                     <i class="fas fa-plus" v-if="!formActive"></i>
                     <i class="fas fa-chevron-up" v-if="formActive"></i>
@@ -174,11 +174,6 @@
         </div>
         <!-- ./col -->
     </div>
-    <div class="row justify-content-center">
-        <div class="col-lg-8 col-sm-12">
-            <wifi-equipos :wifi="wifi"></wifi-equipos>
-        </div>
-    </div>
 
 </main>
 </template>
@@ -216,16 +211,13 @@ export default {
         }
     },
     created() {
-
         this.sockets.subscribe('equipos', (data) => {
-            this.wifi = data.filter(w=>w.online)
-
+            this.wifi = data.filter(w => w.type == "invitado" && w.online)
         });
         this.sockets.subscribe('/equipo/registro', (data) => {
             console.log(data)
             this.equipos.unshift(data)
             this.actualizar()
-            this.$socket.emit('desbloquear', data.mac, data.nombre)
 
         });
 
@@ -246,7 +238,7 @@ export default {
 
                 if (activo == undefined) {
 
-                    count+=1
+                    count += 1
                 }
             }
             return count;

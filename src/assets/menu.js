@@ -14,6 +14,14 @@ export default [
           {"to":"clientes","name":"clientes",icon:"fa-users"},
           {"to":"equipos","name":"Resumen",icon:"fa-list-alt"},
         ]
+      },{
+        "expanded":"",
+        "title":"Reportes",
+        "icon":"fa-list",
+        "menu":[
+        
+          {"to":"reporte-mensual","name":"Mensual",icon:"fa-funnel-dollar"},
+        ]
       },
       {
         "expanded":"",
@@ -23,6 +31,7 @@ export default [
         
           {"to":"invitados","name":"Invitados",icon:"fa-funnel-dollar"},
           {"to":"privados","name":"Interna",icon:"fa-key"},
+          {"to":"bloqueados","name":"Bloqueados",icon:"fa-lock"}
         ]
       }/*,
 

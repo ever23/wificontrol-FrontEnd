@@ -23,9 +23,17 @@
                     <tr>
                         <th v-if="!equipo.activo">{{ equipo.mac }}</th>
                         <th>
-                            <div @click="activarFormTiempo">{{ tiempoEquipo }}</div>
+                            <div @click="activarFormTiempo" v-if="!equipo.libre">{{ tiempoEquipo }}</div>
                             <div v-if="formTiempo">
-                                <input type="range" v-model="tiempoFloat" class="custom-range" @input="calcularTiempo" @change="actualizarTiempo" step="0.5" max="5" min="0">
+                                <input type="range" v-if="!equipo.libre" v-model="tiempoFloat" class="custom-range" @input="calcularTiempo" @change="actualizarTiempo" step="0.5" max="5" min="0">
+                                <div class="btn-group float-right">
+                                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                        <input type="checkbox" class="custom-control-input" v-model="equipo.libre" :id="'customSwitch'+equipo.mac">
+                                        <label class="custom-control-label" :for="'customSwitch'+equipo.mac"></label>
+                                    </div>
+                                    <i class="btn btn-sm btn-primary fa fa-edit" v-if="equipo.libre" @click="actualizarTiempo"></i>
+
+                                </div>
                             </div>
                         </th>
                         <th>{{ equipo.costo }}</th>
@@ -64,6 +72,7 @@
                             <div v-if="!formPago">{{ equipo.tPago }}</div>
                             <div v-if="formPago">
                                 <select class="form-control" v-model="equipo.tPago">
+                                    <option></option>
                                     <option>Pagomovil</option>
                                     <option>Efectivo</option>
                                 </select>
@@ -104,7 +113,7 @@
         <div class="btn-group  float-right">
             <button class="btn btn-danger btn-md" type="button" v-if="equipo.cierre=='Indefinido'" @click="cerrar"><i class="fa fa-window-close"></i>Cerrar</button>
             <button class="btn btn-primary btn-md" type="button" v-if="formPago" @click="actualizarPago"><i class="fa fa-save"></i>Guardar</button>
-            <button class="btn btn-primary btn-md" type="button" @click="eliminar"><i class="fa fa-trash"></i>Eliminar</button>
+            <button class="btn btn-primary btn-md" type="button"  v-if="equipo.activo || isRoot()"  @click="eliminar"><i class="fa fa-trash"></i>Eliminar</button>
         </div>
     </div>
 
@@ -163,6 +172,7 @@ export default {
             }
             this.sockets.subscribe("/equipo/update/" + this.equipo.id_equipo, (data) => {
                 this.equipo = data
+                  this.$emit("update", this.equipo);
 
             })
             if (this.equipo.activo) {

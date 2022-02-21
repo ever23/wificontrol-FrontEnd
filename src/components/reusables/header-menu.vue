@@ -12,24 +12,7 @@
     <ul class="navbar-nav ml-auto">
         <!-- Navbar Search -->
         <li class="nav-item">
-            <a class="nav-link" data-widget="navbar-search" href="#" role="button">
-                <i class="fas fa-search"></i>
-            </a>
-            <div class="navbar-search-block">
-                <form class="form-inline">
-                    <div class="input-group input-group-sm">
-                        <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-                        <div class="input-group-append">
-                            <button class="btn btn-navbar" type="submit">
-                                <i class="fas fa-search"></i>
-                            </button>
-                            <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
+          
         </li>
         <!-- time -->
         <li class="nav-item">
@@ -43,24 +26,17 @@
             <a class="nav-link" href="#" data-toggle="dropdown" aria-label="Open Profile Menu">
                 <i class="fa fa-user fa-lg"></i>
             </a>
-
             <ul class="dropdown-menu settings-menu dropdown-menu-right">
-
                 <li>
                     <router-link class="dropdown-item" :to="{name:'settings'}">
                         <i class="fa fa-cog fa-lg"></i> Configuracion
-
                     </router-link>
-
                 </li>
-                <li>
+                <li v-if="$store.getters.IsRoot">
                     <router-link class="dropdown-item" :to="{name:'usuarios'}">
                         <i class="fa fa-users fa-lg"></i> Usuarios
-
                     </router-link>
-
                 </li>
-
                 <li>
                     <a class="dropdown-item" href="#" @click.prevent="LogOut">
                         <i class="fa fa-sign-out fa-lg"></i> Logout
@@ -74,7 +50,6 @@
                 <label class="custom-control-label" for="customSwitch-modo-oscuro"></label>
             </div>
         </li>
-
     </ul>
 </nav>
 <!-- Navbar-->

@@ -62,34 +62,7 @@
 
     <!-- /.card-body -->
     <div class="card-footer clearfix">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title ">Pagos Pendientes</h3>
-                <h4><span class="badge badge-danger  float-right">Total: {{ deuda }} bs</span></h4>
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body table-responsive p-0" style="height: 150px;">
-                <table class="table table-sm table-head-fixed text-nowrap">
-                    <thead>
-                        <tr>
-                            <th>tiempo</th>
-                            <th>Costo</th>
-                            <th>Hora</th>
-                            <th>Fecha</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="item in equipos" :key="item.id_equipo">
-                            <th> {{ item.tiempo }} </th>
-                            <th>{{ item.costo }}</th>
-                            <th>{{ item.apertura }}</th>
-                            <th>{{ item.fecha }}</th>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <!-- /.card-body -->
-        </div>
+       
 
     </div>
 </div>
@@ -125,7 +98,8 @@ export default {
     created() {
 
         this.equipo = this.item;
-
+        clearInterval(this.intervalRelog)
+         clearInterval(this.intervalIndefinido)
         if (this.equipo.cierre !== "Indefinido") {
 
             this.progress = this.calcularProgreso(this.equipo.tiempo, this.equipo.cierre)
@@ -144,13 +118,12 @@ export default {
 
             this.intervalIndefinido = setInterval(() => {
                 this.tiempoIndefinido = this.tiempoActivo()
-                this.equipo.costo = (this.horaFloat(this.tiempoIndefinido) * this.costoHora).toLocaleString('en')
+                this.equipo.costo = (this.horaFloat(this.tiempoIndefinido) *this.$store.getters.configuraciones.costo_hora).toLocaleString('en')
             }, 1000)
         }
 
     },
     destroyed() {
-        clearInterval(this.intervalIndefinido)
         clearInterval(this.intervalRelog)
     },
     watch: {
@@ -170,7 +143,7 @@ export default {
     },
     computed: {
         tiempoEquipo() {
-            if (this.equipo.tiempo == 'Indefinido') {
+            if (this.equipo.cierre == 'Indefinido') {
                 return this.tiempoIndefinido
             } else {
 
@@ -185,7 +158,11 @@ export default {
                 minimumFractionDigits: 2
             }).format(this.deuda);
             // monto = this.equipo.costo
-            let texto = 'PAGAR 0102 04266023263 23781625 ' + monto
+            let banco =this.$store.getters.configuraciones.banco
+            let telefono =this.$store.getters.configuraciones.telefono
+            let cedula =this.$store.getters.configuraciones.cedula
+
+            let texto = 'PAGAR '+banco+' '+telefono+' '+cedula+' ' + monto
 
             Swal.fire(
                 'Copiado!',

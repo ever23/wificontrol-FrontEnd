@@ -36,7 +36,7 @@
     <td class="d-none d-md-none d-lg-table-cell"> {{ newEquipo.apertura }} </td>
     <td class="d-none d-md-none d-lg-table-cell"> {{ newEquipo.cierre }}</td>
     <th class="d-none d-md-none d-lg-table-cell">
-        <div>
+        <div v-if="!wifi.bloqueado">
             <i class="fa fa-arrow-up"></i>{{ subida }} <i class="fa fa-arrow-down"></i>{{ bajada }}
         </div>
     </th>
@@ -44,8 +44,8 @@
 
         <div class="btn-group">
             <button class="btn btn-sm btn-primary" @click="guardar">Activar</button>
-            <button class="btn btn-primary btn-sm" type="button" v-if="item.bloqueado" @click="desbloquear"><i class="fa fa-lock"></i></button>
-            <button class="btn btn-primary btn-sm" type="button" v-if="!item.bloqueado" @click="bloquear"><i class="fa fa-lock-open"></i></button>
+            <button class="btn btn-primary btn-sm" type="button" v-if="wifi.bloqueado" @click="desbloquear"><i class="fa fa-lock"></i></button>
+            <button class="btn btn-primary btn-sm" type="button" v-if="!wifi.bloqueado" @click="bloquear"><i class="fa fa-lock-open"></i></button>
         </div>
     </td>
 </tr>

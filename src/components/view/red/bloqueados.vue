@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0"> <i :class="['fa','fa-line-chart']"></i> Red </h1>
+                    <h1 class="m-0"> <i :class="['fa','fa-line-chart']"></i> Bloqueados </h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -20,7 +20,7 @@
      <div class="row  justify-content-center">
             
              <div class="col-lg-8 col-sm-12">
-                <wifi-equipos :wifi="privados" titulo="Red "></wifi-equipos>
+                <wifi-equipos :wifi="bloqueados" titulo="Bloqueados "></wifi-equipos>
             </div>
         </div>
    
@@ -45,20 +45,24 @@ export default {
     components: {
         wifiEquipos
     },
-    name: 'privados',
+    name: 'bloqueados',
     data() {
         return {
            
-            privados: [],
+            bloqueados: [],
           
         }
     },
     created() {
        
         this.sockets.subscribe('equipos', (data) => {
-            this.privados = data.filter(e => e.type == "privado" && !e.bloqueado)
+            this.bloqueados = data.filter(e => e.bloqueado)
 
         });
+         
+        
+         
+       
     },
     mounted() {
        

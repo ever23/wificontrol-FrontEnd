@@ -13,8 +13,9 @@ import clientes from '@/components/view/clientes/clientes.vue'
 
 import Invitados from '@/components/view/red/invitados.vue'
 import Privados from '@/components/view/red/privados.vue'
-
-
+import Bloqueados from '@/components/view/red/bloqueados.vue'
+//reportes
+import ResporteMensual from '@/components/view/reportes/reporte-mensual.vue'
 
 import defaultLayaut from '@/components/layaut/default-layaut.vue'
 //404
@@ -55,13 +56,21 @@ export default
                 }
             ]
         },
+        {
+            path: 'reportes',
+            component: defaultLayaut ,
+            children:[
+                { path: 'mensual', name: 'reporte-mensual',component:ResporteMensual},
+            ]
+        },
         { path: 'clientes',name:'clientes', component: clientes },
         {
             path: 'Red',
             component:defaultLayaut,
             children:[
                 { path: 'invitados', name: 'invitados',component:Invitados},
-                { path: 'privados', name: 'privados',component:Privados}
+                { path: 'privados', name: 'privados',component:Privados},
+                { path: 'bloqueados', name: 'bloqueados',component:Bloqueados}
             ]
         },
       
@@ -73,11 +82,10 @@ export default
             [
                 { path: '/', name: 'perfil',component:perfil},
                 { path: 'settings', name: 'settings',component:settings},
-                { path: 'usuarios', name:'usuarios', component:usuarios},
-                { path: 'usuarios/registro', name:'registro-usuario',component:registroUsuario},
-                { path: 'usuarios/sessiones', name:'sessiones',component:sessiones},
-                { path: 'usuarios/editar', name:'editar-usuario', component:editar_usuario,props:true},
-                { path: 'usuarios/contraseña', name:'editar-contrasena', component:editar_contrasena},
+                { path: 'usuarios', name:'usuarios', component:usuarios, meta: {root: true}},
+                { path: 'usuarios/registro', name:'registro-usuario',component:registroUsuario, meta: {root: true}},
+                { path: 'usuarios/editar', name:'editar-usuario', component:editar_usuario,props:true, meta: {root: true}},
+                { path: 'usuarios/contraseña', name:'editar-contrasena', component:editar_contrasena, meta: {root: true}},
                 { path: '401', name:'401', component:error401,props:true},
                
                // { path:'*',name:'Admin404',component:Admin404},

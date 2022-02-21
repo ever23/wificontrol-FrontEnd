@@ -50,18 +50,6 @@
                 <div class=" col-md-4"> {{ newEquipo.costo }} Bs</div>
 
             </div>
-
-            <div class="input-group mb-3">
-                <select class="form-control" v-model="newEquipo.tPago">
-                    <option>Pagomovil</option>
-                    <option>Efectivo</option>
-                </select>
-
-            </div>
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" v-model="newEquipo.referencia">
-
-            </div>
             <div class="input-group mb-3">
                 Apertura: {{ newEquipo.apertura }}<br>
                 Clierre: {{ newEquipo.cierre }}

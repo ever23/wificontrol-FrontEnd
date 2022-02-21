@@ -8,10 +8,8 @@ export default
         token:null,
         id_user:'',
         user:'',
-        nombres:'',
-        apellidos:'',
-        permisos:'',
-        id_granjas:''
+        nombre:'',
+        root:false
 
     },
     getters:
@@ -21,10 +19,8 @@ export default
             return {
                 id_user:state.id_user,
                 user:state.user,
-                nombres:state.nombres,
-                apellidos:state.apellidos,
-                permisos:state.permisos,
-                id_granjas:state.id_granjas
+                nombre:state.nombre,
+                root:state.root
             }
         },
         SessionId(state)
@@ -34,6 +30,10 @@ export default
         IsUser(state)
         {
             return state.id_user!==null;
+        },
+        IsRoot(state)
+        {
+            return state.root
         }
     },
     mutations:
@@ -43,20 +43,18 @@ export default
             state.token=Session.token;
             state.id_user=Session.id_user;
             state.user=Session.user;
-            state.nombres=Session.nombres;
-            state.apellidos=Session.apellidos;
-            state.permisos=Session.permisos;
-            state.id_granjas=Session.id_granjas;
+            state.nombre=Session.nombre;
+            state.root=Session.root;
+          
         },
         Logout(state)
         {
             state.token=null;
             state.id_user=null;
             state.user=null;
-            state.nombres=null;
-            state.apellidos=null;
-            state.permisos=null;
-            state.id_granjas=null;
+            state.nombre=null;
+            state.root=null;
+        
         }
     },
     actions:

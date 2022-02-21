@@ -16,7 +16,7 @@
         </div><!-- /.container-fluid -->
     </div>
 
-    <red-invitados></red-invitados>
+    <red-invitados ></red-invitados>
 
     </div>
      <div class="row  justify-content-center">
@@ -59,7 +59,7 @@ export default {
     created() {
       
         this.sockets.subscribe('equipos', (data) => {
-            this.invitados = data
+            this.invitados = data.filter(e => e.type == "invitado" && !e.bloqueado)
 
         });
          

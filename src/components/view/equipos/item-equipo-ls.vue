@@ -31,7 +31,7 @@
     <div class="btn-group">
         
         <button class="btn btn-primary btn-sm" type="button" v-if="formPago" @click="actualizarPago"><i class="fa fa-edit"></i></button>
-        <button class="btn btn-primary btn-sm" type="button" @click="eliminar"><i class="fa fa-trash"></i></button>
+        <button class="btn btn-primary btn-sm" type="button" v-if="isRoot()" @click="eliminar"><i class="fa fa-trash"></i></button>
 </div>
     </td>
 

@@ -181,6 +181,13 @@ export default {
             then((data) => {
 
                 let equipo = data.data.data
+                this.$socket.emit('desbloquear',{
+                    mac:equipo.mac,
+                    nombre:equipo.nombre,
+                    bloqueado: false,
+                    upLimit:this.$store.getters.configuraciones.uplimit,
+                    downLimit:this.$store.getters.configuraciones.downlimit
+                })
                 Swal.fire('Equipo agregado!', '', 'success')
                 this.newEquipo = {
                     nombre: "",

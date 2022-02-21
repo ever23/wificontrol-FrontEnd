@@ -9,9 +9,17 @@
                 </div>
             </div>
         </div>
-        <div @click="activarFormTiempo">{{ tiempoEquipo }}</div>
+        <div @click="activarFormTiempo" v-if="!equipo.libre">{{ tiempoEquipo }}</div>
         <div v-if="formTiempo">
-            <input type="range" v-model="tiempoFloat" class="custom-range" @input="calcularTiempo" @change="actualizarTiempo" step="0.5" max="5" min="0">
+            <input type="range" v-if="!equipo.libre" v-model="tiempoFloat" class="custom-range" @input="calcularTiempo" @change="actualizarTiempo" step="0.5" max="5" min="0">
+            <div class="btn-group float-right">
+                <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                    <input type="checkbox" class="custom-control-input" v-model="equipo.libre" :id="'customSwitch'+equipo.mac">
+                    <label class="custom-control-label" :for="'customSwitch'+equipo.mac"></label>
+                </div>
+                <i class="btn btn-sm btn-primary fa fa-edit" v-if="equipo.libre" @click="actualizarTiempo"></i>
+
+            </div>
         </div>
 
     </td>
@@ -20,6 +28,7 @@
         <div v-if="!formPago">{{ equipo.tPago }}</div>
         <div v-if="formPago">
             <select class="form-control" v-model="equipo.tPago">
+             <option></option>
                 <option>Pagomovil</option>
                 <option>Efectivo</option>
             </select>
@@ -46,10 +55,9 @@
             <button class="btn btn-primary btn-sm" type="button" v-if="equipo.cierre=='Indefinido'" @click="cerrar"><i class="fa fa-window-close"></i></button>
             <button class="btn btn-primary btn-sm" type="button" v-if="estaAsignado" @click="asignarEquipo"><i class="fa fa-thumbtack"></i></button>
             <button class="btn btn-primary btn-sm" type="button" v-if="formPago" @click="actualizarPago"><i class="fa fa-edit"></i></button>
-            <button class="btn btn-primary btn-sm" type="button" @click="eliminar"><i class="fa fa-trash"></i></button>
+            <button class="btn btn-primary btn-sm" type="button" v-if="equipo.activo || isRoot()" @click="eliminar"><i class="fa fa-trash"></i></button>
         </div>
     </td>
-
 </tr>
 </template>
 
@@ -94,7 +102,6 @@ export default {
         if (this.item == undefined)
             return
         this.equipo = this.item;
-        console.log('cres')
         if (this.equipo.cierre !== "Indefinido") {
 
             this.progress = this.calcularProgreso(this.equipo.tiempo, this.equipo.cierre)
@@ -111,6 +118,7 @@ export default {
         }
         this.sockets.subscribe("/equipo/update/" + this.equipo.id_equipo, (data) => {
             this.equipo = data
+            this.$emit("update", this.equipo);
 
         })
         if (this.equipo.activo) {
@@ -122,6 +130,12 @@ export default {
             })
         }
 
+    },
+    destroyed() {
+        this.sockets.unsubscribe("/equipo/update/" + this.equipo.id_equipo);
+        this.sockets.unsubscribe('equipo/wifi/' + this.equipo.mac);
+        clearInterval(this.intervalIndefinido)
+      
     },
     computed: {
         tiempoEquipo() {
@@ -137,6 +151,10 @@ export default {
         }
     },
     methods: {
+        
+        isRoot() {
+            return this.$store.getters.IsRoot
+        },
         go() {
             this.$router.push({
                 name: 'item-equipo',
@@ -199,13 +217,10 @@ export default {
                     }).then(d => {
                         this.$store.commit('loading', false);
                         clearInterval(this.intervalIndefinido)
+                        this.equipo.costo = update.costo
                         this.equipo.tiempo = update.tiempo
                         this.equipo.cierre = update.cierre
-                        this.progress = this.calcularProgreso(this.equipo.tiempo, this.equipo.cierre)
-                        if (this.progreso == 0) {
-                            this.activo = false
-                        }
-                        this.formTiempo = this.formPago = false
+                        this.equipo.activo = false
                         this.progreso(this.equipo.tiempo, this.equipo.cierre)
                         this.$forceUpdate()
                         this.$emit("update", this.equipo);
@@ -247,6 +262,9 @@ export default {
 
         },
         activarFormTiempo() {
+            if (!this.equipo.activo)
+                return;
+
             this.formTiempo = true
 
             this.last = Object.assign({}, this.equipo)
@@ -272,17 +290,35 @@ export default {
 
                     let update = {
                         id_equipo: this.equipo.id_equipo,
-                        tiempo: this.equipo.tiempo
+                        tiempo: this.equipo.tiempo,
+                        libre: this.equipo.libre
                     }
+
                     axios.put('/api/equipos/tiempo', update).then(d => {
                         this.$store.commit('loading', false);
                         this.formTiempo = false
+                        let equipo = d.data.equipo
                         if (d.data.ok) {
+
                             this.$emit("update", this.equipo);
-                            if (d.data.equipo.activo) {
-                                this.$socket.emit('desbloquear', this.equipo.mac)
+                            if (equipo.activo) {
+                                if (update.libre) {
+                                    this.intervalIndefinido = setInterval(() => {
+                                        this.tiempoIndefinido = this.tiempoActivo()
+                                        this.equipo.costo = (this.horaFloat(this.tiempoIndefinido) * this.$store.getters.configuraciones.costo_hora).toLocaleString('en')
+                                    }, 1000)
+                                }
+                                this.$socket.emit('desbloquear', {
+                                    mac: equipo.mac,
+                                    nombre: equipo.nombre,
+                                    bloqueado: false
+                                })
                             } else {
-                                this.$socket.emit('bloquear', this.equipo.mac)
+                                this.$socket.emit('bloquear', {
+                                    mac: equipo.mac,
+                                    nombre: equipo.nombre,
+                                    bloqueado: true
+                                })
                             }
                             Swal.fire('Actualizado!', '', 'success')
 
