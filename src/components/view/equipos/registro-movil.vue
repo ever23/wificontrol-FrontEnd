@@ -6,24 +6,23 @@
     <div class="card-body">
 
         <formulario @submit.prevent="guardar">
+
             <div class="input-group mb-3">
-                <div v-if="newEquipo.cliente!=undefined" @click="newEquipo.cliente=undefined"> {{newEquipo.nombre}}</div><br>
-                <autocomplete v-if="newEquipo.cliente==undefined" :initValue="newEquipo.nombre" :url="api" :onShouldGetData="bucarCliente" anchor="nombre" label="writer" :classes="{ wrapper: 'form-wrapper ', input: 'form-control', list: 'data-list', item: 'data-list-item' }" :on-select="getData" :onInput="d=>newEquipo.nombre=d">
+
+                <select class="form-control" @change="selectIp">
+                    <option value=""> </option>
+                    <option v-if="equiposPendientes.lenth==0" selected>Cargando..</option>
+                    <option v-for="(item,id) in equiposPendientes" :value="item.mac"> IP {{ item.ip }} {{ item.nombre }}</option>
+                </select>
+                <!-- <button class="input btn btn-primary btn-sm float-right" type="button" @click="cargarWifi"><i class="fa fa-redo-alt"></i></button>
+-->
+            </div>
+            <div class="input-group mb-3">
+                <button v-if="!formActivecliente" class="btn  btn-primary" @click.prevent="formActivecliente=true;newEquipo.id_cliente=null"> {{newEquipo.nombre}}</button>
+
+                <autocomplete v-if="formActivecliente" :initValue="newEquipo.nombre" :url="api" :onShouldGetData="bucarCliente" anchor="nombre" label="writer" :classes="{ wrapper: 'form-wrapper ', input: 'form-control', list: 'data-list', item: 'data-list-item' }" :on-select="getData" :onInput="d=>newEquipo.nombre=d">
                 </autocomplete>
             </div>
-            <div class="input-group mb-3">
-             
-                    <select class="form-control" @change="selectIp">
-                        <option> </option>
-                        <option v-if="equiposPendientes.lenth==0" selected>Cargando..</option>
-                        <option v-for="(item,id) in equiposPendientes" :value="item.mac"> IP {{ item.ip }} {{ item.nombre }}</option>
-
-                    </select>
-                    <button class="input btn btn-primary btn-sm float-right" type="button" @click="cargarWifi"><i class="fa fa-redo-alt"></i></button>
-
-              
-            </div>
-
             <div class="input-group mb-3">
                 <div class="form-group form-control" v-if="! newEquipo.libre">
                     <input type="range" class="custom-range" v-model="newEquipo.rangoTiempo" step="0.5" max="5">
@@ -95,7 +94,7 @@ export default {
         this.costoHora = this.$store.getters.configuraciones.costo_hora
 
         this.api = axios.defaults.baseURL + '/api/clientes/busqueda'
-        this.cargarWifi() 
+        this.cargarWifi()
 
         //this.$('.select2').select2()
     },
@@ -109,18 +108,18 @@ export default {
     },
     methods: {
         actualizar(data) {
-             this.$router.push({
-                                name: 'inicio'
-                            })
+            this.$router.push({
+                name: 'inicio'
+            })
 
         },
         cargarWifi() {
             axios.get('/api/equipos/activos').then(data => {
                 this.equipos = data.data;
-                this.equiposPendientes = []
+
                 this.sockets.subscribe('equipos', (wifi) => {
-                    this.wifi = wifi 
-                    this.sockets.unsubscribe('equipos');
+                    this.wifi = wifi.filter(w => w.type == "invitado" && w.online)
+                    this.equiposPendientes = []
                     for (let wifi of this.wifi) {
 
                         let activo = this.equipos.find(equipo => equipo.mac == wifi.mac);
@@ -137,10 +136,23 @@ export default {
             })
         },
         selectIp(e) {
-          
-            let equipo = this.equiposPendientes.find(eq=>eq.mac== e.target.value)
+
+            let equipo = this.equiposPendientes.find(eq => eq.mac == e.target.value)
             this.newEquipo.ip = equipo.ip
             this.newEquipo.mac = e.target.value
+            axios.get('/api/equipos/mac?mac=' + this.newEquipo.mac).then(result => {
+                if (result.data.nombre !== null) {
+
+                    this.newEquipo.nombre = result.data.nombre
+                    this.newEquipo.id_cliente = result.data.id_cliente
+                    this.formActivecliente = false
+                } else {
+                    this.newEquipo.nombre = this.wifi.nombre
+                    this.formActivecliente = true
+                }
+
+            }).catch(AxiosCatch)
+
         },
     }
 

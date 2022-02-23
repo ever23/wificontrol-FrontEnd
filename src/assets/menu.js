@@ -12,15 +12,7 @@ export default [
         "menu":[
         
           {"to":"clientes","name":"clientes",icon:"fa-users"},
-          {"to":"equipos","name":"Resumen",icon:"fa-list-alt"},
-        ]
-      },{
-        "expanded":"",
-        "title":"Reportes",
-        "icon":"fa-list",
-        "menu":[
-        
-          {"to":"reporte-mensual","name":"Mensual",icon:"fa-funnel-dollar"},
+          {"to":"reporte-mensual","name":"Reportes",icon:"fa-funnel-dollar"},
         ]
       },
       {

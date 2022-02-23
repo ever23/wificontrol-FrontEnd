@@ -31,7 +31,7 @@
             <label class="control-label">Unidad </label>
             <select class="form-control" v-model="unidad">
                 <option value="0">Byte B/s</option>
-                <option value="1000">Kilobyte KB/s</option>
+                <option value="1024">Kilobyte KB/s</option>
                 <option value="1000000">Megabyte MB/s</option>
             </select>
         </div>

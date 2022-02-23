@@ -1,5 +1,5 @@
 <template>
-<tr>
+<tr >
     <td>
         <div>
             <span :alt="wifi.mac"> IP {{ wifi.ip }}</span>
@@ -37,7 +37,10 @@
     <td class="d-none d-md-none d-lg-table-cell"> {{ newEquipo.cierre }}</td>
     <th class="d-none d-md-none d-lg-table-cell">
         <div v-if="!wifi.bloqueado">
-            <i class="fa fa-arrow-up"></i>{{ subida }} <i class="fa fa-arrow-down"></i>{{ bajada }}
+        <span class="badge badge-danger trafic"><i class="fa fa-arrow-up"></i>{{ subida }}</span>
+        <span class="badge badge-danger trafic"> <i class="fa fa-arrow-down"></i>{{ bajada }}</span>
+
+          
         </div>
     </th>
     <td>

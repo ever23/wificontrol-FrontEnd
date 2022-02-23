@@ -7,7 +7,8 @@
         <div class="card-tools">
 
             <div>
-                <i class="fa fa-arrow-up"></i> {{ subida }} <i class="fa fa-arrow-down"></i>{{ bajada }}
+                <span class="badge badge-success trafic"><i class="fa fa-arrow-up"></i>{{ subida }}</span>
+                <span class="badge badge-success trafic"> <i class="fa fa-arrow-down"></i>{{ bajada }}</span>
             </div>
 
         </div>
@@ -40,6 +41,7 @@
 </template>
 
 <script>
+import calcularTraferencia from '@/assets/js/calcularTrasferencia.js'
 import axios from 'axios'
 import itemWifi from './item.vue'
 export default {
@@ -76,30 +78,18 @@ export default {
             for (let w of this.wifi) {
                 subida = Number(subida) + Number(w.up)
             }
-            return this.calcularDatos(subida)
+            return calcularTraferencia(subida)
         },
         bajada() {
             let bajada = 0;
             for (let w of this.wifi) {
                 bajada = Number(bajada) + Number(w.down)
             }
-            return this.calcularDatos(bajada)
+            return calcularTraferencia(bajada)
         }
     },
     methods: {
-        calcularDatos(datos) {
-            let numberFormat = new Intl.NumberFormat('en-En', {
-                minimumFractionDigits: 1,
-                maximumFractionDigits: 1
-            })
-            if (datos < 1000) {
-                return datos + " B/s"
-            } else if (datos < 1000000) {
-                return numberFormat.format(datos / 1000) + " KB/s"
-            } else {
-                return numberFormat.format(datos / 1000000) + " MB/s"
-            }
-        },
+
     }
 
 }

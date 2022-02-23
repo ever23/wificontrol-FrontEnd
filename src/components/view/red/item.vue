@@ -1,10 +1,13 @@
 <template>
-<tr >
-    <td>{{ item.nombre }}</td>
+<tr>
+    <td>
+        {{ item.nombre }}
+    </td>
     <td class="d-none d-md-none d-lg-table-cell">{{ item.ip }}</td>
     <td class="d-none d-md-none d-lg-table-cell">{{ item.mac }}</td>
-    <td><i class="fa fa-arrow-up" ></i>{{ subida }}</td>
-    <td><i class="fa fa-arrow-down" ></i>{{ bajada }}</td>
+    <td><span class="trafic"><i class="fa fa-arrow-up"></i>{{ subida }}</span></td>
+
+    <td> <span class="trafic"> <i class="fa fa-arrow-down"></i>{{ bajada }}</span></td>
     <td>
         <div class="btn-group">
             <button class="btn btn-primary btn-sm" type="button" v-if="item.bloqueado" @click="desbloquear"><i class="fa fa-lock"></i></button>
@@ -17,6 +20,8 @@
 
 <script>
 import axios from 'axios'
+
+import calcularTraferencia from '@/assets/js/calcularTrasferencia.js'
 export default {
 
     props: {
@@ -38,28 +43,18 @@ export default {
 
     },
     computed: {
-        subida(){
-            
-            return this.calcularDatos(this.item.up)
+        subida() {
+
+            return calcularTraferencia(this.item.up)
         },
-        bajada(){
-            return this.calcularDatos(this.item.down)
+        bajada() {
+            return calcularTraferencia(this.item.down)
         }
 
     },
     methods: {
-        calcularDatos(datos){
-            let numberFormat = new Intl.NumberFormat('en-EN', {
-                minimumFractionDigits: 1,
-                maximumFractionDigits: 1
-            })
-            if(datos<1000){
-                return datos+" B/s"
-            }else if(datos < 1000000){
-                return  numberFormat.format(datos/1000)+" KB/s"
-            }else{
-                 return  numberFormat.format(datos/1000000)+" MB/s"
-            }
+        calcularDatos(data) {
+            return calcularTraferencia(data)
         },
         bloquear(e) {
             Swal.fire({

@@ -50,3 +50,8 @@ export default {
 
 }
 </script>
+<style>
+.trafic{
+    width:80px;
+}
+</style>

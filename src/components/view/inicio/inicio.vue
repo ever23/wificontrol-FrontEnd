@@ -79,14 +79,19 @@
     <div class="card">
         <div class="card-header border-transparent">
             <h3 class="card-title">Equipos Conectados </h3><br>
-            <span class="badge badge-warning">Pendientes {{pendientes}}</span>
-            <div class="card-tools">
+            <span class="badge badge-danger" v-if="activosPendientes.length!=0"><i class="fa fa-lock-open"></i>Pendientes {{activosPendientes.length}}</span>
+            <span class="badge badge-warning" v-if="bloqueadosPendientes.length!=0"><i class="fa fa-lock"></i>Pendientes {{bloqueadosPendientes.length}}</span>
+            <span class="badge badge-success trafic"><i class="fa fa-arrow-up"></i>{{ subida }}</span>
+            <span class="badge badge-success trafic"> <i class="fa fa-arrow-down"></i>{{ bajada }}</span>
 
-                <button type="button" class="btn btn-tool d-none d-md-none d-lg-table-cell" @click="activarFormulario">
+            <div class="card-tools" v-if="activosPendientes.length!=0 || bloqueadosPendientes.length!=0">
+
+                <button type="button" class="btn btn-primary d-none d-md-none d-lg-table-cell" @click="activarFormulario">
+                    Agregar
                     <i class="fas fa-plus" v-if="!formActive"></i>
                     <i class="fas fa-chevron-up" v-if="formActive"></i>
                 </button>
-                <router-link class="btn btn-tool d-block d-md-block d-lg-none" :to="{name:'registro'}">
+                <router-link class="btn btn-primary d-block d-md-block d-lg-none" :to="{name:'registro'}">
                     <i class="fas fa-plus"></i>
                 </router-link>
 
@@ -191,6 +196,7 @@ import Autocomplete from 'vue2-autocomplete-js';
 import itemEquipo from '../equipos/item-equipo.vue'
 import registroPendiente from '../equipos/registro-pendiente-tr.vue'
 import wifiEquipos from '../red/equipos.vue'
+import calcularTraferencia from '@/assets/js/calcularTrasferencia.js'
 export default {
     filters: filter,
     components: {
@@ -207,12 +213,30 @@ export default {
             formActive: false,
             estadisticas: {},
             wifi: [],
-            equiposPendientes: []
+            equiposPendientes: [],
+            activosPendientes: [],
+            bloqueadosPendientes: []
         }
     },
     created() {
         this.sockets.subscribe('equipos', (data) => {
             this.wifi = data.filter(w => w.type == "invitado" && w.online)
+            this.activosPendientes = []
+            this.bloqueadosPendientes = []
+            this.equiposPendientes = []
+            let equiposActivos = this.equipos.filter(equipo => equipo.activo)
+            for (let wifi of this.wifi) {
+                let activo = equiposActivos.find(equipo => equipo.mac == wifi.mac);
+                if (activo == undefined) {
+                    if (!wifi.bloqueado) {
+                        this.activosPendientes.push(wifi)
+                    } else {
+                        this.bloqueadosPendientes.push(wifi)
+                    }
+                    this.equiposPendientes.push(wifi)
+
+                }
+            }
         });
         this.sockets.subscribe('/equipo/registro', (data) => {
             console.log(data)
@@ -229,20 +253,21 @@ export default {
         //this.$('.select2').select2()
     },
     computed: {
-        pendientes() {
-            let count = 0
-            let equiposActivos = this.equipos.filter(equipo => equipo.activo)
-            for (let wifi of this.wifi.filter(w => !w.bloqueado)) {
-
-                let activo = equiposActivos.find(equipo => equipo.mac == wifi.mac);
-
-                if (activo == undefined) {
-
-                    count += 1
-                }
+        subida() {
+            let subida = 0;
+            for (let w of this.wifi) {
+                subida = Number(subida) + Number(w.up)
             }
-            return count;
+            return calcularTraferencia(subida)
         },
+        bajada() {
+            let bajada = 0;
+            for (let w of this.wifi) {
+                bajada = Number(bajada) + Number(w.down)
+            }
+            return calcularTraferencia(bajada)
+        },
+
         getEquipos() {
             return this.equipos;
         },
@@ -274,17 +299,6 @@ export default {
 
             } else {
                 this.formActive = !this.formActive;
-            }
-            this.equiposPendientes = []
-            let equiposActivos = this.equipos.filter(equipo => equipo.activo)
-            for (let wifi of this.wifi) {
-
-                let activo = equiposActivos.find(equipo => equipo.mac == wifi.mac);
-
-                if (activo == undefined) {
-
-                    this.equiposPendientes.push(wifi)
-                }
             }
 
         },

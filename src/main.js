@@ -33,7 +33,7 @@ Vue.config.productionTip = process.env.NODE_ENV=="development"?false:true
 
 
 Vue.use(new VueSocketio({
-    debug: true,
+    debug: Vue.config.productionTip ,
     connection: SocketIO(process.env.AXIOS_BASE_URL,  {
         withCredentials: true
       
