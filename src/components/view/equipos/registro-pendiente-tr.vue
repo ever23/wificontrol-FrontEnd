@@ -1,5 +1,5 @@
 <template>
-<tr >
+<tr>
     <td>
         <div>
             <span :alt="wifi.mac"> IP {{ wifi.ip }}</span>
@@ -37,10 +37,9 @@
     <td class="d-none d-md-none d-lg-table-cell"> {{ newEquipo.cierre }}</td>
     <th class="d-none d-md-none d-lg-table-cell">
         <div v-if="!wifi.bloqueado">
-        <span class="badge badge-danger trafic"><i class="fa fa-arrow-up"></i>{{ subida }}</span>
-        <span class="badge badge-danger trafic"> <i class="fa fa-arrow-down"></i>{{ bajada }}</span>
+            <span class="badge badge-danger trafic"><i class="fa fa-arrow-up"></i>{{ subida }}</span>
+            <span class="badge badge-danger trafic"> <i class="fa fa-arrow-down"></i>{{ bajada }}</span>
 
-          
         </div>
     </th>
     <td>
@@ -81,7 +80,7 @@ export default {
         this.newEquipo.ip = this.wifi.ip
         this.newEquipo.mac = this.wifi.mac
         this.sockets.subscribe('equipo/wifi/' + this.wifi.mac, (data) => {
-                this.wifi = data
+            this.wifi = data
 
         })
         axios.get('/api/equipos/mac?mac=' + this.newEquipo.mac).then(result => {
@@ -99,12 +98,16 @@ export default {
 
         //this.$('.select2').select2()
     },
-      computed: {
-        subida(){
-            
+    destroyed() {
+        this.sockets.unsubscribe('equipo/wifi/' + this.wifi.mac);
+
+    },
+    computed: {
+        subida() {
+
             return this.calcularDatos(this.wifi.up)
         },
-        bajada(){
+        bajada() {
             return this.calcularDatos(this.wifi.down)
         }
 

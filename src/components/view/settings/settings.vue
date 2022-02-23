@@ -31,7 +31,7 @@
             <label class="control-label">Unidad </label>
             <select class="form-control" v-model="unidad">
                 <option value="0">Byte B/s</option>
-                <option value="1024">Kilobyte KB/s</option>
+                <option value="1024" select>Kilobyte KB/s</option>
                 <option value="1000000">Megabyte MB/s</option>
             </select>
         </div>
@@ -77,7 +77,7 @@ export default {
         }
     },
     created() {
-        this.config = this.$store.getters.configuraciones
+        this.config = Object.assign({}, this.$store.getters.configuraciones)
         this.uplimit = this.config.uplimit
         this.downlimit = this.config.downlimit
     },
@@ -105,11 +105,25 @@ export default {
                 this.config.uplimit = this.uplimit * this.unidad
                 this.config.downlimit = this.downlimit * this.unidad
             }
-
+            this.$store.commit('loading', true);
             axios.put('/api/configuraciones', this.config).
             then((request) => {
                 if (request.data.ok) {
                     Swal.fire('Listo!', '', 'success')
+                    this.$store.commit('loading', false);
+                    if (this.config.uplimit != this.$store.getters.configuraciones.uplimit || this.config.downlimit != this.$store.getters.configuraciones.downlimit) {
+
+                        this.sockets.subscribe('equipos', (data) => {
+                            this.sockets.unsubscribe('equipos')
+                            let wifi = data.filter(w => w.type == "invitado" && !w.bloqueado)
+                            for (let w of wifi) {
+                                w.upLimit = this.config.uplimit
+                                w.downLimit = this.config.downlimit
+                                this.$socket.emit('desbloquear', w)
+                            }
+
+                        });
+                    }
                     this.$store.dispatch('fetchConfiguraciones')
 
                 } else {

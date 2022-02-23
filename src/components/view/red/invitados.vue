@@ -67,6 +67,10 @@ export default {
          
        
     },
+     destroyed() {
+        this.sockets.unsubscribe("equipos");
+
+    },
     mounted() {
        
         //this.$store.commit('loading', true);

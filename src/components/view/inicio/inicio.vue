@@ -246,6 +246,12 @@ export default {
         });
 
     },
+    destroyed() {
+        this.sockets.unsubscribe("/equipo/registro");
+        this.sockets.unsubscribe('equipos');
+       
+      
+    },
     mounted() {
         this.actualizar()
         //this.$store.commit('loading', true);

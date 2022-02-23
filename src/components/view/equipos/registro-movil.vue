@@ -98,6 +98,10 @@ export default {
 
         //this.$('.select2').select2()
     },
+    destroyed() {
+        this.sockets.unsubscribe("equipos");
+
+    },
     watch: {
         // cada vez que equipo cambie, esta función será ejecutada
         item: function (newitem, olditem) {
